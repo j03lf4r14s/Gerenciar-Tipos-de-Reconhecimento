@@ -3,39 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sistema de Gestão Integrado - Completo</title>
+<title>Sistema de Gestão Integrado</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#f0f2f5; --sidebar:#1e293b; --sidebar-hover:#334155; --card:#fff; --ink:#1f2937; --muted:#64748b;
-    --line:#e2e8f0; --soft:#f8fafc; --brand:#3b82f6; --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
-    --tag-ok-bg:#dcfce7; --tag-ok:#166534; --tag-warn-bg:#fef3c7; --tag-warn:#92400e; --tag-bad-bg:#fee2e2; --tag-bad:#991b1b; --tag-info-bg:#dbeafe; --tag-info:#1e40af;
+    /* Nova Paleta Verde-Petróleo */
+    --bg:#f4f7f6; --sidebar:#0a2e26; --sidebar-hover:#11453a; --card:#ffffff; 
+    --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --soft:#f8fafc; 
+    --brand:#0e7a68; --brand-hover:#0b6354;
+    --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
+    --tag-ok-bg:#d1fae5; --tag-ok:#065f46; --tag-warn-bg:#fef3c7; --tag-warn:#92400e; 
+    --tag-bad-bg:#fee2e2; --tag-bad:#991b1b; --tag-info-bg:#e0f2fe; --tag-info:#075985;
   }
   [data-theme="dark"]{
-    --bg:#0f172a; --sidebar:#0b1220; --sidebar-hover:#1e293b; --card:#1e293b; --ink:#e2e8f0; --muted:#94a3b8;
-    --line:#334155; --soft:#273449;
-    --tag-ok-bg:#064e3b; --tag-ok:#a7f3d0; --tag-warn-bg:#78350f; --tag-warn:#fde68a; --tag-bad-bg:#7f1d1d; --tag-bad:#fecaca; --tag-info-bg:#1e3a8a; --tag-info:#bfdbfe;
+    --bg:#0f172a; --sidebar:#0b1220; --sidebar-hover:#1e293b; --card:#1e293b; 
+    --ink:#e2e8f0; --muted:#94a3b8; --line:#334155; --soft:#273449;
+    --tag-ok-bg:#064e3b; --tag-ok:#a7f3d0; --tag-warn-bg:#78350f; --tag-warn:#fde68a; 
+    --tag-bad-bg:#7f1d1d; --tag-bad:#fecaca; --tag-info-bg:#1e3a8a; --tag-info:#bfdbfe;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{font-family:'Segoe UI',Roboto,Arial,sans-serif; background:var(--bg); color:var(--ink); display:flex; height:100vh; overflow:hidden;}
 
   /* SIDEBAR */
   .sidebar{width:260px; background:var(--sidebar); color:#fff; display:flex; flex-direction:column; transition:transform .3s; z-index:50;}
-  .sidebar h1{font-size:16px; padding:20px; border-bottom:1px solid #334155; text-align:center; color:#e2e8f0; line-height:1.4;}
+  .sidebar h1{font-size:16px; padding:20px; border-bottom:1px solid #1e4d40; text-align:center; color:#e2e8f0; line-height:1.4; display:flex; align-items:center; justify-content:center; gap:8px;}
   .sidebar nav{flex:1; padding:10px 0; overflow-y:auto;}
-  .nav{display:flex; align-items:center; gap:10px; width:100%; padding:12px 20px; color:#cbd5e1; background:none; border:none; border-left:3px solid transparent; border-radius:0; text-align:left; font-size:14px; font-weight:400; cursor:pointer;}
+  .nav{display:flex; align-items:center; gap:12px; width:100%; padding:14px 20px; color:#cbd5e1; background:none; border:none; border-left:3px solid transparent; border-radius:0; text-align:left; font-size:14px; font-weight:500; cursor:pointer; transition:0.2s;}
   .nav:hover,.nav.active{background:var(--sidebar-hover); color:#fff;}
-  .nav.active{border-left-color:var(--brand);}
-  .nav .icon{font-size:18px;}
-  .side-foot{padding:12px 16px; border-top:1px solid #334155; display:flex; flex-direction:column; gap:8px;}
-  .side-foot button{background:#334155; color:#e2e8f0; width:100%; font-size:12px; padding:6px;}
-  .side-foot button:hover{background:#475569;}
-  .overlay{display:none; position:fixed; inset:0; background:rgba(15,23,42,.5); z-index:40;}
+  .nav.active{border-left-color:#34d399;}
+  .nav svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+  .side-foot{padding:15px 16px; border-top:1px solid #1e4d40; display:flex; flex-direction:column; gap:8px;}
+  .side-foot button{background:#1e4d40; color:#e2e8f0; width:100%; font-size:12px; padding:8px; display:flex; align-items:center; justify-content:center; gap:6px;}
+  .side-foot button:hover{background:#2d6b5c;}
+  .side-foot svg{width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2;}
+  .overlay{display:none; position:fixed; inset:0; background:rgba(10,46,38,.6); z-index:40;}
 
   /* MAIN */
   .main{flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0;}
-  .topbar{background:var(--card); padding:14px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:12px;}
-  .topbar h2{font-size:18px;}
+  .topbar{background:var(--card); padding:16px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:12px;}
+  .topbar h2{font-size:20px; color:var(--brand);}
   .menu-btn{display:none; background:var(--soft); color:var(--ink); font-size:18px; padding:6px 12px;}
   .content{flex:1; padding:24px; overflow-y:auto;}
 
@@ -43,76 +49,78 @@
   .tab-content{display:none; animation:fadeIn .3s;}
   .tab-content.active{display:block;}
   @keyframes fadeIn{from{opacity:0; transform:translateY(5px);} to{opacity:1; transform:translateY(0);}}
-  .card{background:var(--card); border-radius:10px; border:1px solid var(--line); padding:20px; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .card{background:var(--card); border-radius:12px; border:1px solid var(--line); padding:20px; margin-bottom:20px; box-shadow:0 4px 6px -1px rgba(0,0,0,.05);}
   .card h3{font-size:14px; margin-bottom:15px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
-  button{cursor:pointer; font-family:inherit; padding:8px 16px; border-radius:6px; border:none; font-weight:600; font-size:13px; transition:.2s;}
-  .btn-primary{background:var(--brand); color:#fff;} .btn-primary:hover{background:#2563eb;}
+  button{cursor:pointer; font-family:inherit; padding:9px 16px; border-radius:8px; border:none; font-weight:600; font-size:13px; transition:.2s; display:inline-flex; align-items:center; justify-content:center; gap:6px;}
+  .btn-primary{background:var(--brand); color:#fff;} .btn-primary:hover{background:var(--brand-hover);}
   .btn-secondary{background:var(--line); color:var(--ink);} .btn-secondary:hover{filter:brightness(.93);}
   .btn-danger{background:var(--bad); color:#fff;}
   .btn-success{background:var(--ok); color:#fff;}
-  .btn-sm{padding:4px 10px; font-size:12px;}
+  .btn-sm{padding:5px 10px; font-size:12px;}
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
   .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
-  .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:15px; margin-bottom:20px;}
-  .kpi{background:var(--card); border:1px solid var(--line); border-radius:8px; padding:15px;}
+  .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:15px; margin-bottom:20px;}
+  .kpi{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px; display:flex; flex-direction:column;}
   .kpi .lbl{font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase;}
-  .kpi .val{font-size:24px; font-weight:700; margin-top:5px;}
+  .kpi .val{font-size:28px; font-weight:700; margin-top:8px;}
   .kpi .val.ok{color:var(--ok);} .kpi .val.warn{color:var(--warn);} .kpi .val.bad{color:var(--bad);}
   .table-wrap{overflow-x:auto;}
   table{width:100%; border-collapse:collapse; font-size:13px;}
-  th,td{padding:10px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
+  th,td{padding:12px 10px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
   th{font-size:11px; color:var(--muted); text-transform:uppercase; background:var(--soft); white-space:nowrap;}
   th.sortable{cursor:pointer; user-select:none;} th.sortable:hover{color:var(--brand);}
   tbody tr:hover{background:var(--soft);}
   tr.atrasada td:first-child{border-left:3px solid var(--bad);}
-  .tag{padding:3px 8px; border-radius:12px; font-size:11px; font-weight:700; white-space:nowrap; display:inline-block;}
+  .tag{padding:4px 10px; border-radius:12px; font-size:11px; font-weight:700; white-space:nowrap; display:inline-block;}
   .tag.ok{background:var(--tag-ok-bg); color:var(--tag-ok);} .tag.warn{background:var(--tag-warn-bg); color:var(--tag-warn);}
   .tag.bad{background:var(--tag-bad-bg); color:var(--tag-bad);} .tag.info{background:var(--tag-info-bg); color:var(--tag-info);}
   .actions{display:flex; gap:6px; flex-wrap:wrap;}
-  .empty{padding:28px 10px; text-align:center; color:var(--muted); font-size:13px;}
-  .empty b{display:block; font-size:15px; margin-bottom:4px; color:var(--ink);}
+  .empty{padding:30px 10px; text-align:center; color:var(--muted); font-size:14px;}
+  .empty b{display:block; font-size:16px; margin-bottom:6px; color:var(--ink);}
   .filters{display:flex; flex-wrap:wrap; gap:15px; align-items:end;}
-  .filters label{font-size:11px; font-weight:600; color:var(--muted); display:block; margin-bottom:4px;}
-  input,select,textarea{font-family:inherit; font-size:14px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:6px; padding:8px 10px;}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--brand); outline-offset:-1px;}
+  .filters label{font-size:11px; font-weight:600; color:var(--muted); display:block; margin-bottom:6px;}
+  input,select,textarea{font-family:inherit; font-size:14px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px;}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--brand); outline-offset:-1px; border-color:transparent;}
   .chart-box{position:relative; height:280px; width:100%;}
-  .chart-fail{display:flex; height:100%; align-items:center; justify-content:center; color:var(--muted); font-size:13px; text-align:center; padding:10px;}
   .item-list{display:flex; flex-direction:column; gap:10px;}
-  .item-card{border:1px solid var(--line); border-radius:8px; padding:15px; background:var(--card);}
-  .item-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);}
-  .item-card h4{font-size:15px; color:var(--brand); margin-bottom:6px; display:flex; justify-content:space-between; gap:8px; align-items:center;}
-  .item-card p{font-size:13px; color:var(--muted); margin-bottom:6px;}
-  .item-card .meta{font-size:12px; color:var(--muted); display:flex; gap:14px; flex-wrap:wrap; margin-top:8px; align-items:center;}
-  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
-  .chip{display:inline-flex; align-items:center; gap:6px; background:var(--soft); border:1px solid var(--line); border-radius:16px; padding:4px 6px 4px 12px; font-size:13px;}
-  .chip button{background:none; color:var(--muted); padding:0 6px; font-size:14px;} .chip button:hover{color:var(--bad);}
-  .sugestao{background:var(--tag-info-bg); color:var(--tag-info); border-radius:8px; padding:12px 14px; font-size:13px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;}
+  .item-card{border:1px solid var(--line); border-radius:10px; padding:18px; background:var(--card); transition:0.2s;}
+  .item-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.05); border-color:var(--brand);}
+  .item-card h4{font-size:16px; color:var(--brand); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; align-items:center;}
+  .item-card p{font-size:13px; color:var(--muted); margin-bottom:8px; line-height:1.5;}
+  .item-card .meta{font-size:12px; color:var(--muted); display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; align-items:center;}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
+  .chip{display:inline-flex; align-items:center; gap:8px; background:var(--soft); border:1px solid var(--line); border-radius:20px; padding:6px 6px 6px 14px; font-size:13px; font-weight:500;}
+  .chip button{background:none; color:var(--muted); padding:2px 6px; font-size:14px; border-radius:50%;} 
+  .chip button:hover{color:var(--bad); background:var(--tag-bad-bg);}
+  .sugestao{background:var(--tag-info-bg); color:var(--tag-info); border-radius:10px; padding:16px; font-size:14px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; border:1px solid rgba(0,0,0,.05);}
 
   /* MODAIS */
-  dialog{border:none; border-radius:12px; padding:0; width:min(620px,92vw); box-shadow:0 20px 40px rgba(0,0,0,.3); background:var(--card); color:var(--ink); margin:auto;}
-  dialog::backdrop{background:rgba(15,23,42,.6);}
-  .dlg-head{padding:15px 20px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; background:var(--soft); border-radius:12px 12px 0 0;}
-  .dlg-head h4{font-size:16px;} .dlg-head button{background:none; color:var(--ink); font-size:18px; padding:2px 8px;}
-  .dlg-body{padding:20px; max-height:68vh; overflow-y:auto;}
-  .dlg-foot{padding:15px 20px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:10px; background:var(--soft); border-radius:0 0 12px 12px;}
-  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:15px;}
-  .form-group{margin-bottom:15px;}
-  .form-group label{display:block; font-size:12px; font-weight:600; color:var(--muted); margin-bottom:5px;}
+  dialog{border:none; border-radius:14px; padding:0; width:min(620px,92vw); box-shadow:0 25px 50px -12px rgba(0,0,0,.25); background:var(--card); color:var(--ink); margin:auto;}
+  dialog::backdrop{background:rgba(10,46,38,.7); backdrop-filter:blur(2px);}
+  .dlg-head{padding:18px 24px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; background:var(--soft); border-radius:14px 14px 0 0;}
+  .dlg-head h4{font-size:18px; color:var(--brand);} .dlg-head button{background:none; color:var(--muted); font-size:20px; padding:2px 8px;}
+  .dlg-head button:hover{color:var(--bad);}
+  .dlg-body{padding:24px; max-height:70vh; overflow-y:auto;}
+  .dlg-foot{padding:18px 24px; border-top:1px solid var(--line); display:flex; justify-content:flex-end; gap:12px; background:var(--soft); border-radius:0 0 14px 14px;}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .form-group{margin-bottom:18px;}
+  .form-group label{display:block; font-size:12px; font-weight:700; color:var(--muted); margin-bottom:6px;}
   .form-group input,.form-group select,.form-group textarea{width:100%;}
-  .form-group textarea{resize:vertical; min-height:70px;}
-  .form-error{color:var(--bad); font-size:12px; margin-top:4px; min-height:16px;}
+  .form-group textarea{resize:vertical; min-height:80px;}
+  .form-error{color:var(--bad); font-size:13px; margin-top:6px; min-height:18px; font-weight:500;}
 
   /* TOASTS */
-  #toasts{position:fixed; right:20px; bottom:20px; display:flex; flex-direction:column; gap:8px; z-index:100;}
-  .toast{background:#1e293b; color:#fff; padding:12px 18px; border-radius:8px; font-size:13px; box-shadow:0 6px 20px rgba(0,0,0,.25); border-left:4px solid var(--ok); animation:fadeIn .25s;}
+  #toasts{position:fixed; right:24px; bottom:24px; display:flex; flex-direction:column; gap:10px; z-index:100;}
+  .toast{background:var(--sidebar); color:#fff; padding:14px 20px; border-radius:10px; font-size:14px; box-shadow:0 10px 25px rgba(0,0,0,.2); display:flex; align-items:center; gap:12px; animation:slideIn .3s; border-left:4px solid var(--ok);}
   .toast.erro{border-left-color:var(--bad);} .toast.aviso{border-left-color:var(--warn);}
+  @keyframes slideIn{from{transform:translateX(100%); opacity:0;} to{transform:translateX(0); opacity:1;}}
 
   @media(max-width:900px){
     .grid-2,.grid-3,.form-row{grid-template-columns:1fr;}
     .sidebar{position:fixed; top:0; bottom:0; left:0; transform:translateX(-100%);}
     .sidebar.open{transform:none;} .overlay.open{display:block;}
     .menu-btn{display:inline-block;}
-    .content{padding:14px;} .topbar{padding:12px 14px;}
+    .content{padding:16px;} .topbar{padding:16px;}
   }
 </style>
 </head>
@@ -122,20 +130,50 @@
 
 <!-- SIDEBAR -->
 <aside class="sidebar" id="sidebar">
-  <h1>Gestão Integrada</h1>
+  <h1>
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    Gestão Integrada
+  </h1>
   <nav>
-    <button class="nav active" onclick="switchTab('dashboard',this)"><span class="icon">📊</span> Dashboard de Ordens</button>
-    <button class="nav" onclick="switchTab('projetos',this)"><span class="icon">📁</span> Projetos &amp; Lições</button>
-    <button class="nav" onclick="switchTab('equipe',this)"><span class="icon">👥</span> Equipe &amp; Reconhecimento</button>
-    <button class="nav" onclick="switchTab('comunicacao',this)"><span class="icon">💬</span> Comunicação Eficaz</button>
+    <button class="nav active" onclick="switchTab('dashboard',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+      Dashboard
+    </button>
+    <button class="nav" onclick="switchTab('projetos',this)">
+      <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+      Projetos & Lições
+    </button>
+    <button class="nav" onclick="switchTab('equipe',this)">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+      Equipe & Reconhecimento
+    </button>
+    <button class="nav" onclick="switchTab('comunicacao',this)">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      Comunicação Eficaz
+    </button>
   </nav>
   <div class="side-foot">
-    <button onclick="gerarDadosTeste()" style="background:#10b981; color:white; font-weight:bold;">⚡ Gerar Dados de Teste</button>
-    <button onclick="limparTudo()" style="background:#ef4444; color:white;">🗑️ Limpar Tudo</button>
-    <hr style="border-color:#334155; margin:4px 0;">
-    <button onclick="exportarBackup()">⬇ Exportar backup</button>
-    <button onclick="document.getElementById('arquivoBackup').click()">⬆ Importar backup</button>
-    <button onclick="alternarTema()">🌓 Tema claro/escuro</button>
+    <button onclick="gerarOrdensTeste()" style="background:#0e7a68; color:white; border:1px solid #34d399;">
+      <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      Gerar Ordens de Teste
+    </button>
+    <button onclick="limparApenasOrdens()" style="background:#7f1d1d; color:white;">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      Limpar Ordens
+    </button>
+    <hr style="border-color:#1e4d40; margin:8px 0;">
+    <button onclick="exportarBackup()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      Exportar Backup
+    </button>
+    <button onclick="document.getElementById('arquivoBackup').click()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+      Importar Backup
+    </button>
+    <button onclick="alternarTema()">
+      <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      Alternar Tema
+    </button>
     <input type="file" id="arquivoBackup" accept=".json,application/json" style="display:none" onchange="importarBackup(event)">
   </div>
 </aside>
@@ -143,26 +181,30 @@
 <!-- MAIN -->
 <div class="main">
   <header class="topbar">
-    <div style="display:flex; align-items:center; gap:10px;">
+    <div style="display:flex; align-items:center; gap:12px;">
       <button class="menu-btn" onclick="toggleMenu(true)" aria-label="Abrir menu">☰</button>
       <h2 id="page-title">Dashboard de Ordens</h2>
     </div>
-    <div style="font-size:13px; color:var(--muted)">Bem-vindo, Gestor</div>
+    <div style="font-size:14px; font-weight:500; color:var(--muted); display:flex; align-items:center; gap:8px;">
+      <div style="width:32px; height:32px; border-radius:50%; background:var(--brand); color:white; display:flex; align-items:center; justify-content:center; font-weight:bold;">G</div>
+      Gestor
+    </div>
   </header>
 
   <div class="content">
 
     <!-- ABA 1: DASHBOARD -->
     <section id="tab-dashboard" class="tab-content active">
-      <div class="card" style="padding:15px;">
+      <div class="card" style="padding:16px;">
         <div class="filters">
-          <div><label for="f_de">De</label><input type="date" id="f_de" onchange="renderDashboard()"></div>
+          <div><label for="f_de">Período De</label><input type="date" id="f_de" onchange="renderDashboard()"></div>
           <div><label for="f_ate">Até</label><input type="date" id="f_ate" onchange="renderDashboard()"></div>
           <div><label for="f_colab">Colaborador</label><select id="f_colab" onchange="renderDashboard()"><option value="">Todos</option></select></div>
           <div><label for="f_status">Status</label>
             <select id="f_status" onchange="renderDashboard()">
               <option value="">Todos</option><option value="aberta">Abertas</option><option value="atrasada">Atrasadas</option><option value="solucionada">Solucionadas</option>
-            </select></div>
+            </select>
+          </div>
           <div style="flex:1;"></div>
           <button class="btn-primary" onclick="abrirOrdem()">+ Nova Ordem</button>
           <button class="btn-secondary" onclick="exportarCSV()">Exportar CSV</button>
@@ -173,23 +215,23 @@
       <div class="kpi-grid" id="kpis-ordens"></div>
 
       <div class="grid-2">
-        <div class="card"><h3>Ordens por Colaborador</h3><div class="chart-box" id="box-barra"><canvas id="chBarra"></canvas></div></div>
-        <div class="card"><h3>Últimos 3 Meses</h3><div class="chart-box" id="box-3m"><canvas id="ch3m"></canvas></div></div>
+        <div class="card"><h3>Volume por Colaborador</h3><div class="chart-box" id="box-barra"><canvas id="chBarra"></canvas></div></div>
+        <div class="card"><h3>Evolução (3 Meses)</h3><div class="chart-box" id="box-3m"><canvas id="ch3m"></canvas></div></div>
       </div>
       <div class="grid-2">
-        <div class="card"><h3>Ordens por Assunto</h3><div class="chart-box" id="box-assunto"><canvas id="chAssunto"></canvas></div></div>
+        <div class="card"><h3>Top Assuntos</h3><div class="chart-box" id="box-assunto"><canvas id="chAssunto"></canvas></div></div>
         <div class="card">
-          <h3>Métrica Individual por Colaborador</h3>
+          <h3>Métrica por Colaborador</h3>
           <div class="table-wrap"><table>
-            <thead><tr><th>Colaborador</th><th>Abriu</th><th>Resolveu</th><th title="Das ordens que abriu, % já solucionadas">Taxa de Solução</th><th>Tempo Médio</th></tr></thead>
+            <thead><tr><th>Colaborador</th><th>Abriu</th><th>Resolveu</th><th title="Taxa de Solução">Taxa</th><th>Tempo Médio</th></tr></thead>
             <tbody id="tb-colab"></tbody>
           </table></div>
         </div>
       </div>
 
       <div class="card">
-        <h3>Ordens de Serviço
-          <input type="search" id="f_busca" placeholder="Buscar protocolo, cliente, assunto..." oninput="renderTabelaOrdens()" style="min-width:260px; font-weight:400; text-transform:none; letter-spacing:0;">
+        <h3>Detalhamento de Ordens
+          <input type="search" id="f_busca" placeholder="Buscar protocolo, cliente..." oninput="renderTabelaOrdens()" style="min-width:260px; font-weight:400; text-transform:none; letter-spacing:0;">
         </h3>
         <div class="table-wrap"><table>
           <thead><tr id="thead-ordens"></tr></thead>
@@ -215,29 +257,27 @@
     <!-- ABA 3: EQUIPE & RECONHECIMENTO -->
     <section id="tab-equipe" class="tab-content">
       <div class="grid-2">
-        <!-- Colaboradores -->
         <div class="card">
           <h3>Colaboradores</h3>
           <div class="chips" id="lista-colabs"></div>
-          <form onsubmit="adicionarColab(event)" style="display:flex; gap:10px; flex-wrap:wrap;">
+          <form onsubmit="adicionarColab(event)" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
             <input type="text" id="c_nome" placeholder="Nome do colaborador" required maxlength="60" style="flex:1; min-width:200px;">
             <button class="btn-primary" type="submit">Adicionar</button>
           </form>
         </div>
         
-        <!-- Tipos de Reconhecimento -->
         <div class="card">
           <h3>Tipos de Reconhecimento</h3>
           <div class="chips" id="lista-tipos-rec"></div>
-          <form onsubmit="adicionarTipoRec(event)" style="display:flex; gap:10px; flex-wrap:wrap;">
-            <input type="text" id="t_nome" placeholder="Ex: Destaque do Mês, Proatividade..." required maxlength="40" style="flex:1; min-width:200px;">
+          <form onsubmit="adicionarTipoRec(event)" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+            <input type="text" id="t_nome" placeholder="Ex: Destaque, Proatividade..." required maxlength="40" style="flex:1; min-width:200px;">
             <button class="btn-primary" type="submit">Adicionar</button>
           </form>
         </div>
       </div>
 
       <div class="card">
-        <h3>Registro de Reconhecimento <button class="btn-primary" onclick="abrirReconhecimento()">+ Reconhecer Alguém</button></h3>
+        <h3>Histórico de Reconhecimento <button class="btn-primary" onclick="abrirReconhecimento()">+ Reconhecer Alguém</button></h3>
         <div id="sugestao-rec"></div>
         <div class="table-wrap"><table>
           <thead><tr><th>Colaborador</th><th>Tipo</th><th>Motivo</th><th>Data</th><th></th></tr></thead>
@@ -249,16 +289,16 @@
     <!-- ABA 4: COMUNICAÇÃO -->
     <section id="tab-comunicacao" class="tab-content">
       <div class="card">
-        <h3>Guia de Comunicação Eficiente na Liderança</h3>
-        <p style="font-size:13px; color:var(--muted); margin-bottom:20px;">Substitua padrões prejudiciais por abordagens eficientes baseadas em fatos e necessidades.</p>
+        <h3>Guia de Comunicação Eficiente</h3>
+        <p style="font-size:14px; color:var(--muted); margin-bottom:20px;">Substitua padrões prejudiciais por abordagens eficientes baseadas em fatos e necessidades.</p>
         <div class="table-wrap"><table>
-          <thead><tr><th style="width:30%; color:var(--bad);">Padrão Prejudicial</th><th style="width:70%; color:var(--ok);">Padrão Eficiente</th></tr></thead>
+          <thead><tr><th style="width:30%; color:var(--bad);">Evite dizer</th><th style="width:70%; color:var(--ok);">Prefira dizer</th></tr></thead>
           <tbody>
             <tr><td>"Eu acho..."</td><td>"Eu acredito que [...] porque [...]"</td></tr>
-            <tr><td>"Eu preciso..."</td><td>Coloque a necessidade como foco, não você. Ex: "É necessário que..."</td></tr>
-            <tr><td>"Isso é injusto"</td><td>"Isso não está de acordo com o que combinamos: [fato / regra acordada]" (baseie-se em fatos e regras acordadas)</td></tr>
-            <tr><td>"Eu gosto de receber adiantado"</td><td>"Devido a custos e responsabilidades, é essencial combinarmos o adiantamento de 50%."</td></tr>
-            <tr><td>"Você não entende"</td><td>"Por favor, tente me entender. Estou sob pressão e preciso focar nisso agora."</td></tr>
+            <tr><td>"Eu preciso..."</td><td>Coloque a necessidade como foco. Ex: "É necessário que..."</td></tr>
+            <tr><td>"Isso é injusto"</td><td>"Isso não está de acordo com o que combinamos: [fato]"</td></tr>
+            <tr><td>"Eu gosto de receber adiantado"</td><td>"Devido aos custos, é essencial combinarmos o adiantamento de 50%."</td></tr>
+            <tr><td>"Você não entende"</td><td>"Por favor, tente me entender. Estou sob pressão e preciso focar nisso."</td></tr>
           </tbody>
         </table></div>
       </div>
@@ -269,95 +309,88 @@
 
 <div id="toasts" aria-live="polite"></div>
 
-<!-- MODAL: ORDEM -->
+<!-- MODAIS -->
 <dialog id="dlgOrdem">
   <form onsubmit="salvarOrdem(event)">
-    <div class="dlg-head"><h4 id="o_titulo">Nova Ordem de Serviço</h4><button type="button" onclick="fecharModal('dlgOrdem')" aria-label="Fechar">✕</button></div>
+    <div class="dlg-head"><h4 id="o_titulo">Nova Ordem</h4><button type="button" onclick="fecharModal('dlgOrdem')">✕</button></div>
     <div class="dlg-body">
       <div class="form-row">
-        <div class="form-group"><label for="o_protocolo">Protocolo</label><input type="text" id="o_protocolo" maxlength="30" placeholder="Ex: OS-1001"></div>
-        <div class="form-group"><label for="o_cliente">Cliente</label><input type="text" id="o_cliente" maxlength="80"></div>
+        <div class="form-group"><label>Protocolo</label><input type="text" id="o_protocolo" placeholder="Ex: OS-1001"></div>
+        <div class="form-group"><label>Cliente</label><input type="text" id="o_cliente"></div>
       </div>
-      <div class="form-group"><label for="o_assunto">Assunto</label><input type="text" id="o_assunto" list="dl_assuntos" required maxlength="80"><datalist id="dl_assuntos"></datalist></div>
+      <div class="form-group"><label>Assunto</label><input type="text" id="o_assunto" list="dl_assuntos" required><datalist id="dl_assuntos"></datalist></div>
       <div class="form-row">
-        <div class="form-group"><label for="o_prioridade">Prioridade</label>
+        <div class="form-group"><label>Prioridade</label>
           <select id="o_prioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option></select></div>
-        <div class="form-group"><label for="o_cab">Colaborador (Abertura)</label><select id="o_cab" required></select></div>
+        <div class="form-group"><label>Colaborador (Abertura)</label><select id="o_cab" required></select></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label for="o_dta">Data de Abertura</label><input type="date" id="o_dta" required onchange="sugerirPrazo()"></div>
-        <div class="form-group"><label for="o_prazo">Prazo (SLA)</label><input type="date" id="o_prazo"></div>
+        <div class="form-group"><label>Data de Abertura</label><input type="date" id="o_dta" required onchange="sugerirPrazo()"></div>
+        <div class="form-group"><label>Prazo (SLA)</label><input type="date" id="o_prazo"></div>
       </div>
-      <div class="form-group"><label for="o_status">Status</label>
+      <div class="form-group"><label>Status</label>
         <select id="o_status" onchange="toggleSolucao()"><option value="aberta">Aberta</option><option value="solucionada">Solucionada</option></select></div>
       <div class="form-row" id="grupo_solucao" style="display:none;">
-        <div class="form-group"><label for="o_csol">Colaborador (Solução)</label><select id="o_csol"></select></div>
-        <div class="form-group"><label for="o_dts">Data de Solução</label><input type="date" id="o_dts"></div>
+        <div class="form-group"><label>Colaborador (Solução)</label><select id="o_csol"></select></div>
+        <div class="form-group"><label>Data de Solução</label><input type="date" id="o_dts"></div>
       </div>
-      <div class="form-group"><label for="o_obs">Observações</label><textarea id="o_obs" maxlength="500"></textarea></div>
+      <div class="form-group"><label>Observações</label><textarea id="o_obs"></textarea></div>
       <div class="form-error" id="o_erro"></div>
     </div>
-    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgOrdem')">Cancelar</button><button type="submit" class="btn-primary">Salvar Ordem</button></div>
+    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgOrdem')">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div>
   </form>
 </dialog>
 
-<!-- MODAL: PROJETO -->
 <dialog id="dlgProjeto">
   <form onsubmit="salvarProjeto(event)">
-    <div class="dlg-head"><h4 id="p_titulo">Cadastrar Projeto (Kick-off)</h4><button type="button" onclick="fecharModal('dlgProjeto')" aria-label="Fechar">✕</button></div>
+    <div class="dlg-head"><h4 id="p_titulo">Novo Projeto</h4><button type="button" onclick="fecharModal('dlgProjeto')">✕</button></div>
     <div class="dlg-body">
-      <div class="form-group"><label for="p_nome">Nome do Projeto</label><input type="text" id="p_nome" required maxlength="100" placeholder="Ex: Casa de João e Maria"></div>
-      <div class="form-group"><label for="p_obj">Objetivo / Descrição Curta</label><textarea id="p_obj" required placeholder="Descreva o objetivo principal..."></textarea></div>
-      <div class="form-group"><label for="p_riscos">Riscos Principais</label><textarea id="p_riscos" placeholder="Ex: Atraso na entrega de materiais..."></textarea></div>
+      <div class="form-group"><label>Nome do Projeto</label><input type="text" id="p_nome" required></div>
+      <div class="form-group"><label>Objetivo</label><textarea id="p_obj" required></textarea></div>
+      <div class="form-group"><label>Riscos</label><textarea id="p_riscos"></textarea></div>
       <div class="form-row">
-        <div class="form-group"><label for="p_resp">Responsável</label><select id="p_resp"></select></div>
-        <div class="form-group"><label for="p_status">Status</label>
+        <div class="form-group"><label>Responsável</label><select id="p_resp"></select></div>
+        <div class="form-group"><label>Status</label>
           <select id="p_status"><option value="planejamento">Planejamento</option><option value="andamento">Em andamento</option><option value="concluido">Concluído</option></select></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label for="p_ini">Início</label><input type="date" id="p_ini"></div>
-        <div class="form-group"><label for="p_fim">Fim previsto</label><input type="date" id="p_fim"></div>
+        <div class="form-group"><label>Início</label><input type="date" id="p_ini"></div>
+        <div class="form-group"><label>Fim previsto</label><input type="date" id="p_fim"></div>
       </div>
-      <div class="form-group"><label for="p_equipe">Equipe</label><input type="text" id="p_equipe" maxlength="150" placeholder="Ex: Ana, Bruno, Carlos"></div>
+      <div class="form-group"><label>Equipe</label><input type="text" id="p_equipe" placeholder="Ex: Ana, Bruno"></div>
       <div class="form-error" id="p_erro"></div>
     </div>
-    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgProjeto')">Cancelar</button><button type="submit" class="btn-primary">Salvar Projeto</button></div>
+    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgProjeto')">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div>
   </form>
 </dialog>
 
-<!-- MODAL: LIÇÃO -->
 <dialog id="dlgLicao">
   <form onsubmit="salvarLicao(event)">
-    <div class="dlg-head"><h4>Registrar Lição Aprendida</h4><button type="button" onclick="fecharModal('dlgLicao')" aria-label="Fechar">✕</button></div>
+    <div class="dlg-head"><h4>Nova Lição</h4><button type="button" onclick="fecharModal('dlgLicao')">✕</button></div>
     <div class="dlg-body">
-      <div class="form-group"><label for="l_proj">Projeto Relacionado</label><select id="l_proj" required></select></div>
-      <div class="form-group"><label for="l_sit">Situação</label><textarea id="l_sit" required placeholder="O que aconteceu?"></textarea></div>
-      <div class="form-group"><label for="l_acao">Ação Executada</label><textarea id="l_acao" required placeholder="O que foi feito?"></textarea></div>
-      <div class="form-group"><label for="l_res">Resultado Obtido</label><textarea id="l_res" required placeholder="Qual foi o resultado?"></textarea></div>
-      <div class="form-group"><label for="l_lic">Lição Aprendida</label><textarea id="l_lic" required placeholder="O que aprendemos para o futuro?"></textarea></div>
+      <div class="form-group"><label>Projeto Relacionado</label><select id="l_proj" required></select></div>
+      <div class="form-group"><label>Situação</label><textarea id="l_sit" required></textarea></div>
+      <div class="form-group"><label>Ação Executada</label><textarea id="l_acao" required></textarea></div>
+      <div class="form-group"><label>Resultado Obtido</label><textarea id="l_res" required></textarea></div>
+      <div class="form-group"><label>Lição Aprendida</label><textarea id="l_lic" required></textarea></div>
     </div>
-    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgLicao')">Cancelar</button><button type="submit" class="btn-primary">Salvar Lição</button></div>
+    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgLicao')">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div>
   </form>
 </dialog>
 
-<!-- MODAL: RECONHECIMENTO -->
 <dialog id="dlgRec">
   <form onsubmit="salvarReconhecimento(event)">
-    <div class="dlg-head"><h4>Reconhecer Colaborador</h4><button type="button" onclick="fecharModal('dlgRec')" aria-label="Fechar">✕</button></div>
+    <div class="dlg-head"><h4>Reconhecer</h4><button type="button" onclick="fecharModal('dlgRec')">✕</button></div>
     <div class="dlg-body">
-      <div class="form-group"><label for="r_colab">Colaborador</label><select id="r_colab" required></select></div>
-      <div class="form-group"><label for="r_tipo">Tipo de Reconhecimento</label>
-        <!-- Dropdown dinâmico preenchido via JS -->
-        <select id="r_tipo" required></select>
-      </div>
-      <div class="form-group"><label for="r_motivo">Motivo / Ação</label><input type="text" id="r_motivo" required maxlength="200" placeholder="Ex: Entrega do relatório financeiro antes do prazo"></div>
+      <div class="form-group"><label>Colaborador</label><select id="r_colab" required></select></div>
+      <div class="form-group"><label>Tipo</label><select id="r_tipo" required></select></div>
+      <div class="form-group"><label>Motivo</label><input type="text" id="r_motivo" required></div>
     </div>
     <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgRec')">Cancelar</button><button type="submit" class="btn-primary">Registrar</button></div>
   </form>
 </dialog>
 
-<!-- MODAL: CONFIRMAÇÃO -->
-<dialog id="dlgConfirm" style="width:min(420px,92vw);">
+<dialog id="dlgConfirm">
   <form method="dialog">
     <div class="dlg-head"><h4>Confirmar</h4></div>
     <div class="dlg-body"><p id="cf_msg"></p></div>
@@ -366,8 +399,7 @@
 </dialog>
 
 <script>
-  // ================= UTILIDADES =================
-  const KEY = 'sistema_gestao_v5'; // Atualizado para v5
+  const KEY = 'sistema_gestao_final';
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const uid = () => Date.now() * 1000 + Math.floor(Math.random() * 1000);
@@ -378,9 +410,9 @@
   const difDias = (a, b) => Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000);
   const fmtData = s => s ? s.split('-').reverse().join('/') : '—';
   const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const ASSUNTOS_PADRAO = ['2ª VIA DE BOLETO', 'ALTERAÇÃO DE PLANO', 'ACIONAMENTO DISCADOR PRODUTIVO', 'SUPORTE TÉCNICO', 'ALTERAÇÃO DE TITULARIDADE'];
+  const ASSUNTOS_PADRAO = ['2ª VIA DE BOLETO', 'ALTERAÇÃO DE PLANO', 'ACIONAMENTO DISCADOR PRODUTIVO', 'SUPORTE TÉCNICO'];
   const SLA_PADRAO_DIAS = 5;
-  const TIPOS_REC_PADRAO = ['No Particular', 'Em Público', 'Via E-mail', 'Elogio Público', 'Bônus / Premiação'];
+  const TIPOS_REC_PADRAO = ['No Particular', 'Em Público', 'Via E-mail', 'Elogio Público', 'Bônus'];
 
   let db = null, charts = {}, sort = { key: 'data_abertura', dir: -1 };
   let ordemEditando = null, projetoEditando = null;
@@ -388,7 +420,7 @@
   function toast(msg, tipo = '') {
     const el = document.createElement('div');
     el.className = 'toast ' + tipo;
-    el.textContent = msg;
+    el.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> ${msg}`;
     $('toasts').appendChild(el);
     setTimeout(() => el.remove(), 3500);
   }
@@ -403,133 +435,56 @@
     });
   }
 
-  // ================= DADOS E PERSISTÊNCIA =================
-  function salvarTudo() {
-    try { localStorage.setItem(KEY, JSON.stringify(db)); }
-    catch (e) { toast('Não foi possível salvar no navegador. Exporte um backup.', 'erro'); }
-  }
-
-  function validarDb(d) {
-    return d && ['colaboradores', 'ordens', 'projetos', 'licoes', 'reconhecimentos', 'tipos_reconhecimento'].every(k => Array.isArray(d[k]));
-  }
-
+  function salvarTudo() { localStorage.setItem(KEY, JSON.stringify(db)); }
+  
   function carregar() {
     try {
-      const v5 = localStorage.getItem(KEY);
-      if (v5) { 
-        const d = JSON.parse(v5); 
-        if (validarDb(d)) return d; 
-      }
-    } catch (e) { 
-      toast('Dados salvos estavam corrompidos; iniciando uma base limpa.', 'aviso'); 
-    }
-    // Retorna base limpa com os tipos padrão de reconhecimento
-    return { 
-      colaboradores: [], ordens: [], projetos: [], licoes: [], reconhecimentos: [],
-      tipos_reconhecimento: [...TIPOS_REC_PADRAO]
-    };
+      const c = localStorage.getItem(KEY);
+      if (c) { const d = JSON.parse(c); if (d.colaboradores) return d; }
+    } catch (e) {}
+    return { colaboradores: [], ordens: [], projetos: [], licoes: [], reconhecimentos: [], tipos_reconhecimento: [...TIPOS_REC_PADRAO] };
   }
 
-  // ================= GERADOR DE DADOS DE TESTE =================
-  function gerarDadosTeste() {
-    if (db.ordens.length > 0) {
-      if (!confirm("Você já tem dados cadastrados. Deseja sobrescrever com os dados de teste?")) return;
-    }
-
-    const hoje = new Date();
+  function gerarOrdensTeste() {
+    if (!db.colaboradores.length) { toast('Cadastre colaboradores primeiro.', 'aviso'); return; }
     const h = hojeISO();
+    const getC = () => db.colaboradores[Math.floor(Math.random() * db.colaboradores.length)].id;
     
-    const colabs = [
-      { id: 101, nome: 'Ana Silva' },
-      { id: 102, nome: 'Bruno Costa' },
-      { id: 103, nome: 'Carla Dias' },
-      { id: 104, nome: 'Diego Alves' },
-      { id: 105, nome: 'Elisa Rocha' }
-    ];
-
-    const ordens = [];
-    function novaOrdem(id, prot, assunto, cliente, prio, cabId, diasAtrasAbertura, status, csolId, diasParaResolver) {
-      const dtAbertura = addDias(h, -diasAtrasAbertura);
-      const prazo = addDias(dtAbertura, SLA_PADRAO_DIAS);
-      let dtSolucao = null;
-      if (status === 'solucionada') {
-        dtSolucao = addDias(dtAbertura, diasParaResolver);
-      }
-      ordens.push({
-        id, protocolo: prot, assunto, cliente, prioridade: prio, colab_abertura: cabId,
-        data_abertura: dtAbertura, prazo, status, colab_solucao: csolId, data_solucao: dtSolucao, obs: 'Gerado automaticamente para testes.'
+    for(let i=0; i<15; i++) {
+      const isSoluc = Math.random() > 0.4;
+      const dtAb = addDias(h, -Math.floor(Math.random()*60));
+      db.ordens.push({
+        id: uid(), protocolo: `OS-${Math.floor(Math.random()*9000)+1000}`,
+        assunto: ASSUNTOS_PADRAO[Math.floor(Math.random()*ASSUNTOS_PADRAO.length)],
+        cliente: `Cliente ${i}`, prioridade: ['baixa','media','alta'][Math.floor(Math.random()*3)],
+        colab_abertura: getC(), data_abertura: dtAb, prazo: addDias(dtAb, SLA_PADRAO_DIAS),
+        status: isSoluc ? 'solucionada' : 'aberta',
+        colab_solucao: isSoluc ? getC() : null, data_solucao: isSoluc ? addDias(dtAb, Math.floor(Math.random()*6)) : null,
+        obs: 'Teste automático.'
       });
     }
-
-    novaOrdem(1, 'OS-1001', '2ª VIA DE BOLETO', 'João', 'baixa', 101, 40, 'solucionada', 101, 2);
-    novaOrdem(2, 'OS-1002', 'SUPORTE TÉCNICO', 'Maria', 'alta', 102, 35, 'solucionada', 103, 1);
-    novaOrdem(3, 'OS-1003', 'ALTERAÇÃO DE PLANO', 'Carlos', 'media', 103, 30, 'solucionada', 102, 4);
-    novaOrdem(4, 'OS-1004', 'ACIONAMENTO DISCADOR PRODUTIVO', 'Empresa X', 'alta', 101, 20, 'solucionada', 104, 8);
-    novaOrdem(5, 'OS-1005', 'SUPORTE TÉCNICO', 'Empresa Y', 'alta', 104, 15, 'solucionada', 101, 7);
-    novaOrdem(6, 'OS-1006', '2ª VIA DE BOLETO', 'Fernanda', 'baixa', 102, 2, 'aberta', null, null);
-    novaOrdem(7, 'OS-1007', 'ALTERAÇÃO DE TITULARIDADE', 'Paulo', 'media', 103, 1, 'aberta', null, null);
-    novaOrdem(8, 'OS-1008', 'SUPORTE TÉCNICO', 'Ricardo', 'alta', 105, 10, 'aberta', null, null);
-    novaOrdem(9, 'OS-1009', 'ALTERAÇÃO DE PLANO', 'Beatriz', 'media', 101, 6, 'aberta', null, null);
-    novaOrdem(10, 'OS-1010', '2ª VIA DE BOLETO', 'Lucas', 'baixa', 102, 75, 'solucionada', 102, 2);
-    novaOrdem(11, 'OS-1011', 'SUPORTE TÉCNICO', 'Juliana', 'alta', 103, 80, 'solucionada', 103, 3);
-    novaOrdem(12, 'OS-1012', 'ALTERAÇÃO DE PLANO', 'Marcos', 'media', 104, 65, 'solucionada', 104, 4);
-
-    const projetos = [
-      { id: 201, nome: 'Casa de João e Maria', obj: 'Reforma estrutural completa', riscos: 'Sobreposição de sapatas e falta de material', equipe: 'Ana, Bruno', responsavel: 101, status: 'andamento', inicio: addDias(h, -30), fim: addDias(h, 60) },
-      { id: 202, nome: 'Sistema Escolar', obj: 'Desenvolvimento de plataforma EAD', riscos: 'Atraso na entrega do backend', equipe: 'Carla, Diego', responsavel: 103, status: 'planejamento', inicio: h, fim: addDias(h, 120) }
-    ];
-
-    const licoes = [
-      { id: 301, projetoId: 201, sit: 'Esposo solicitou cozinha americana direto ao projetista.', acao: 'Projetista refez o projeto.', res: 'Esposa não gostou e solicitou alteração.', lic: 'Consultar todas as partes interessadas antes de alterar o escopo.' },
-      { id: 302, projetoId: 202, sit: 'Cliente pediu nova funcionalidade via WhatsApp.', acao: 'Dev implementou de imediato.', res: 'Atraso de 2 semanas na entrega.', lic: 'Direcionar solicitações para o gerente de projetos avaliar o impacto.' }
-    ];
-
-    const reconhecimentos = [
-      { id: 401, colabId: 101, tipo: 'Em Público', motivo: 'Melhor tempo médio de solução', data: addDias(h, -2) },
-      { id: 402, colabId: 103, tipo: 'Bônus / Premiação', motivo: 'Entrega do projeto antes do prazo', data: addDias(h, -5) }
-    ];
-
-    db = { colaboradores: colabs, ordens, projetos, licoes, reconhecimentos, tipos_reconhecimento: [...TIPOS_REC_PADRAO] };
-    
-    salvarTudo();
-    atualizarTudo();
-    toast('Dados de teste gerados com sucesso! Navegue pelas abas.');
+    salvarTudo(); renderDashboard(); toast('15 ordens geradas!');
   }
 
-  async function limparTudo() {
-    if (!(await confirmar('Isso apagará TODOS os dados (ordens, projetos, colaboradores). Tem certeza?'))) return;
-    db = { colaboradores: [], ordens: [], projetos: [], licoes: [], reconhecimentos: [], tipos_reconhecimento: [...TIPOS_REC_PADRAO] };
-    salvarTudo();
-    atualizarTudo();
-    toast('Todos os dados foram apagados.');
+  async function limparApenasOrdens() {
+    if (!db.ordens.length) return toast('Já está vazio.', 'aviso');
+    if (!(await confirmar('Apagar todas as ordens? Os colaboradores e projetos serão mantidos.'))) return;
+    db.ordens = []; salvarTudo(); renderDashboard(); renderSugestao(); toast('Dashboard limpo.');
   }
-
-  // ================= NAVEGAÇÃO / TEMA =================
-  const TITULOS = { dashboard: 'Dashboard de Ordens', projetos: 'Projetos & Lições', equipe: 'Equipe & Reconhecimento', comunicacao: 'Comunicação Eficaz' };
 
   function switchTab(tabId, el) {
     document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav').forEach(a => a.classList.remove('active'));
-    $('tab-' + tabId).classList.add('active');
-    if (el) el.classList.add('active');
-    $('page-title').textContent = TITULOS[tabId];
+    $('tab-' + tabId).classList.add('active'); el.classList.add('active');
+    const t = { dashboard: 'Dashboard', projetos: 'Projetos & Lições', equipe: 'Equipe', comunicacao: 'Comunicação' };
+    $('page-title').textContent = t[tabId];
     toggleMenu(false);
     if (tabId === 'dashboard') renderDashboard();
   }
 
-  function toggleMenu(abrir) {
-    $('sidebar').classList.toggle('open', abrir);
-    $('overlay').classList.toggle('open', abrir);
-  }
+  function toggleMenu(abrir) { $('sidebar').classList.toggle('open', abrir); $('overlay').classList.toggle('open', abrir); }
+  function alternarTema() { const n = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = n; localStorage.setItem('sistema_gestao_tema', n); renderDashboard(); }
 
-  function alternarTema() {
-    const novo = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.theme = novo;
-    try { localStorage.setItem('sistema_gestao_tema', novo); } catch (e) {}
-    renderDashboard();
-  }
-
-  // ================= DASHBOARD =================
   const nomeColab = id => (db.colaboradores.find(c => c.id === id) || {}).nome || '—';
   const estaAtrasada = o => o.status === 'aberta' && o.prazo && o.prazo < hojeISO();
   const media = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
@@ -537,492 +492,138 @@
   const fmtDias = v => v == null ? '—' : v.toFixed(1).replace('.', ',') + ' dias';
 
   function ordensFiltradas() {
-    const de = $('f_de').value, ate = $('f_ate').value;
-    const colab = Number($('f_colab').value) || 0, st = $('f_status').value;
+    const de = $('f_de').value, ate = $('f_ate').value, c = Number($('f_colab').value)||0, s = $('f_status').value;
     return db.ordens.filter(o => {
       if (de && o.data_abertura < de) return false;
       if (ate && o.data_abertura > ate) return false;
-      if (colab && o.colab_abertura !== colab && o.colab_solucao !== colab) return false;
-      if (st === 'atrasada') return estaAtrasada(o);
-      if (st && o.status !== st) return false;
+      if (c && o.colab_abertura !== c && o.colab_solucao !== c) return false;
+      if (s === 'atrasada') return estaAtrasada(o);
+      if (s && o.status !== s) return false;
       return true;
     });
   }
 
   function renderDashboard() {
     popularSelects();
-    const lista = ordensFiltradas();
-    const finalizadas = lista.filter(o => o.status === 'solucionada');
-    const pendentes = lista.length - finalizadas.length;
-    const atrasadas = lista.filter(estaAtrasada).length;
-    const taxa = lista.length ? finalizadas.length / lista.length * 100 : 0;
-    const tempo = media(finalizadas.map(tempoSolucao).filter(v => v != null));
+    const l = ordensFiltradas();
+    const fin = l.filter(o=>o.status==='solucionada');
+    const atras = l.filter(estaAtrasada).length;
+    const tx = l.length ? (fin.length/l.length*100) : 0;
+    const tmp = media(fin.map(tempoSolucao).filter(v=>v!=null));
 
-    $('alerta-atraso').innerHTML = atrasadas
-      ? `<div class="sugestao" style="background:var(--tag-bad-bg); color:var(--tag-bad);"><span>⚠️ <b>${atrasadas}</b> ordem(ns) aberta(s) com prazo vencido.</span><button class="btn-sm btn-danger" onclick="$('f_status').value='atrasada'; renderDashboard();">Ver atrasadas</button></div>`
-      : '';
-
+    $('alerta-atraso').innerHTML = atras ? `<div class="sugestao" style="background:var(--tag-bad-bg); color:var(--tag-bad);"><b>⚠️ ${atras} ordens atrasadas.</b><button class="btn-sm btn-danger" onclick="$('f_status').value='atrasada'; renderDashboard();">Ver</button></div>` : '';
+    
     $('kpis-ordens').innerHTML = `
-      <div class="kpi"><div class="lbl">Abertas no período</div><div class="val">${lista.length}</div></div>
-      <div class="kpi"><div class="lbl">Finalizadas</div><div class="val ok">${finalizadas.length}</div></div>
-      <div class="kpi"><div class="lbl">Pendentes</div><div class="val warn">${pendentes}</div></div>
-      <div class="kpi"><div class="lbl">Atrasadas</div><div class="val ${atrasadas ? 'bad' : 'ok'}">${atrasadas}</div></div>
-      <div class="kpi"><div class="lbl">Taxa de Solução</div><div class="val ${taxa >= 80 ? 'ok' : (lista.length ? 'bad' : '')}">${taxa.toFixed(1).replace('.', ',')}%</div></div>
-      <div class="kpi"><div class="lbl">Tempo Médio</div><div class="val">${fmtDias(tempo)}</div></div>`;
+      <div class="kpi"><div class="lbl">Abertas</div><div class="val">${l.length}</div></div>
+      <div class="kpi"><div class="lbl">Finalizadas</div><div class="val ok">${fin.length}</div></div>
+      <div class="kpi"><div class="lbl">Atrasadas</div><div class="val ${atras?'bad':'ok'}">${atras}</div></div>
+      <div class="kpi"><div class="lbl">Taxa de Solução</div><div class="val ${tx>=80?'ok':'warn'}">${tx.toFixed(1)}%</div></div>
+      <div class="kpi"><div class="lbl">Tempo Médio</div><div class="val">${fmtDias(tmp)}</div></div>`;
 
     const stats = db.colaboradores.map(c => {
-      const abriu = lista.filter(o => o.colab_abertura === c.id);
-      const resolveu = lista.filter(o => o.colab_solucao === c.id && o.status === 'solucionada');
-      const abertasResolvidas = abriu.filter(o => o.status === 'solucionada').length;
-      return { id: c.id, nome: c.nome, abriu: abriu.length, resolveu: resolveu.length,
-        taxa: abriu.length ? abertasResolvidas / abriu.length * 100 : null,
-        tempo: media(resolveu.map(tempoSolucao).filter(v => v != null)) };
-    }).filter(s => s.abriu || s.resolveu);
+      const ab = l.filter(o=>o.colab_abertura===c.id);
+      const rs = l.filter(o=>o.colab_solucao===c.id && o.status==='solucionada');
+      return { nome: c.nome, ab: ab.length, rs: rs.length, tx: ab.length ? (ab.filter(o=>o.status==='solucionada').length/ab.length*100) : 0 };
+    }).filter(s=>s.ab||s.rs);
 
-    $('tb-colab').innerHTML = stats.length ? stats.map(s => `<tr>
-        <td><strong>${esc(s.nome)}</strong></td><td>${s.abriu}</td><td>${s.resolveu}</td>
-        <td>${s.taxa == null ? '—' : `<span class="tag ${s.taxa >= 80 ? 'ok' : s.taxa >= 50 ? 'warn' : 'bad'}">${s.taxa.toFixed(1).replace('.', ',')}%</span>`}</td>
-        <td>${fmtDias(s.tempo)}</td></tr>`).join('')
-      : `<tr><td colspan="5"><div class="empty"><b>Sem dados no período</b>Gere dados de teste no menu lateral esquerdo.</div></td></tr>`;
+    $('tb-colab').innerHTML = stats.map(s=>`<tr><td><b>${esc(s.nome)}</b></td><td>${s.ab}</td><td>${s.rs}</td><td><span class="tag ${s.tx>=80?'ok':'warn'}">${s.tx.toFixed(1)}%</span></td></tr>`).join('') || '<tr><td colspan="4" class="empty">Sem dados.</td></tr>';
 
-    renderGraficos(stats, lista);
+    renderGraficos(stats, l);
     renderTabelaOrdens();
   }
 
-  function criarGrafico(nome, boxId, canvasId, config) {
-    if (charts[nome]) { charts[nome].destroy(); delete charts[nome]; }
-    const box = $(boxId);
-    if (typeof Chart === 'undefined') {
-      box.innerHTML = '<div class="chart-fail">Gráficos indisponíveis (Chart.js não carregou).</div>';
-      return;
-    }
-    if (!box.querySelector('canvas')) box.innerHTML = `<canvas id="${canvasId}"></canvas>`;
-    charts[nome] = new Chart($(canvasId), config);
-  }
+  function renderGraficos(stats, l) {
+    const opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } };
+    if(charts.barra) charts.barra.destroy();
+    charts.barra = new Chart($('chBarra'), { type:'bar', data:{ labels:stats.map(s=>s.nome), datasets:[{label:'Abriu',data:stats.map(s=>s.ab),backgroundColor:'#0e7a68'},{label:'Resolveu',data:stats.map(s=>s.rs),backgroundColor:'#10b981'}] }, options: opt });
 
-  function renderGraficos(stats, lista) {
-    if (typeof Chart !== 'undefined') {
-      const cs = getComputedStyle(document.documentElement);
-      Chart.defaults.color = cs.getPropertyValue('--muted').trim();
-      Chart.defaults.borderColor = cs.getPropertyValue('--line').trim();
-    }
-    const opcoes = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } };
+    if(charts.meses) charts.meses.destroy();
+    const c = Number($('f_colab').value)||0;
+    const base = db.ordens.filter(o=>!c||o.colab_abertura===c||o.colab_solucao===c);
+    const d = new Date(); const chaves=[]; const rot=[];
+    for(let i=2;i>=0;i--){ const dt = new Date(d.getFullYear(), d.getMonth()-i, 1); chaves.push(`${dt.getFullYear()}-${pad(dt.getMonth()+1)}`); rot.push(MESES[dt.getMonth()]); }
+    charts.meses = new Chart($('ch3m'), { type:'line', data:{ labels:rot, datasets:[{label:'Abriu',data:chaves.map(k=>base.filter(o=>o.data_abertura.startsWith(k)).length),borderColor:'#0e7a68',tension:.3},{label:'Resolveu',data:chaves.map(k=>base.filter(o=>o.status==='solucionada'&&o.data_solucao?.startsWith(k)).length),borderColor:'#10b981',tension:.3}] }, options: opt });
 
-    criarGrafico('barra', 'box-barra', 'chBarra', {
-      type: 'bar',
-      data: { labels: stats.map(s => s.nome), datasets: [
-        { label: 'Abriu', data: stats.map(s => s.abriu), backgroundColor: '#3b82f6', borderRadius: 4 },
-        { label: 'Resolveu', data: stats.map(s => s.resolveu), backgroundColor: '#10b981', borderRadius: 4 }] },
-      options: opcoes
-    });
-
-    const colab = Number($('f_colab').value) || 0;
-    const base = db.ordens.filter(o => !colab || o.colab_abertura === colab || o.colab_solucao === colab);
-    const agora = new Date(), chaves = [], rotulos = [];
-    for (let i = 2; i >= 0; i--) {
-      const d = new Date(agora.getFullYear(), agora.getMonth() - i, 1);
-      chaves.push(`${d.getFullYear()}-${pad(d.getMonth() + 1)}`);
-      rotulos.push(`${MESES[d.getMonth()]}/${d.getFullYear()}`);
-    }
-    criarGrafico('meses', 'box-3m', 'ch3m', {
-      type: 'line',
-      data: { labels: rotulos, datasets: [
-        { label: 'Aberturas', data: chaves.map(k => base.filter(o => o.data_abertura.startsWith(k)).length), borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: .3 },
-        { label: 'Finalizações', data: chaves.map(k => base.filter(o => o.status === 'solucionada' && o.data_solucao && o.data_solucao.startsWith(k)).length), borderColor: '#10b981', backgroundColor: '#10b981', tension: .3 }] },
-      options: opcoes
-    });
-
-    const porAssunto = {};
-    lista.forEach(o => { porAssunto[o.assunto] = (porAssunto[o.assunto] || 0) + 1; });
-    const ordenados = Object.entries(porAssunto).sort((a, b) => b[1] - a[1]);
-    criarGrafico('assunto', 'box-assunto', 'chAssunto', {
-      type: 'bar',
-      data: { labels: ordenados.map(a => a[0]), datasets: [{ label: 'Ordens', data: ordenados.map(a => a[1]), backgroundColor: '#8b5cf6', borderRadius: 4 }] },
-      options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, ticks: { precision: 0 } } } }
-    });
+    if(charts.assunto) charts.assunto.destroy();
+    const a = {}; l.forEach(o=>a[o.assunto]=(a[o.assunto]||0)+1);
+    charts.assunto = new Chart($('chAssunto'), { type:'bar', data:{ labels:Object.keys(a), datasets:[{label:'Qtd',data:Object.values(a),backgroundColor:'#0e7a68'}] }, options:{...opt, indexAxis:'y'} });
   }
 
   function popularSelects() {
-    const fc = $('f_colab'), v = fc.value;
-    fc.innerHTML = '<option value="">Todos</option>' + db.colaboradores.map(c => `<option value="${c.id}">${esc(c.nome)}</option>`).join('');
-    fc.value = v;
-    const assuntos = new Set(ASSUNTOS_PADRAO);
-    db.ordens.forEach(o => assuntos.add(o.assunto));
-    $('dl_assuntos').innerHTML = [...assuntos].map(a => `<option value="${esc(a)}">`).join('');
-  }
-
-  // ----- Tabela de ordens -----
-  const COLUNAS = [
-    ['protocolo', 'Protocolo'], ['assunto', 'Assunto'], ['cliente', 'Cliente'], ['prioridade', 'Prior.'],
-    ['data_abertura', 'Abertura'], ['prazo', 'Prazo'], ['status', 'Status']
-  ];
-  const PRIO = { alta: ['bad', 'Alta'], media: ['warn', 'Média'], baixa: ['info', 'Baixa'] };
-
-  function ordenarPor(chave) {
-    sort = { key: chave, dir: sort.key === chave ? -sort.dir : 1 };
-    renderTabelaOrdens();
+    $('f_colab').innerHTML = '<option value="">Todos</option>' + db.colaboradores.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
   }
 
   function renderTabelaOrdens() {
-    $('thead-ordens').innerHTML = COLUNAS.map(([k, nome]) =>
-      `<th class="sortable" onclick="ordenarPor('${k}')">${nome}${sort.key === k ? (sort.dir > 0 ? ' ▲' : ' ▼') : ''}</th>`).join('') + '<th>Responsáveis</th><th>Ações</th>';
-
-    const q = $('f_busca').value.trim().toLowerCase();
-    let lista = ordensFiltradas();
-    if (q) lista = lista.filter(o => [o.protocolo, o.cliente, o.assunto, o.obs].some(v => String(v || '').toLowerCase().includes(q)));
-    const valor = o => sort.key === 'status' ? (estaAtrasada(o) ? 'atrasada' : o.status) : String(o[sort.key] ?? '').toLowerCase();
-    lista.sort((a, b) => valor(a) < valor(b) ? -sort.dir : valor(a) > valor(b) ? sort.dir : 0);
-
-    $('tb-ordens').innerHTML = lista.length ? lista.map(o => {
+    $('thead-ordens').innerHTML = ['Protocolo','Assunto','Cliente','Prior.','Abertura','Status','Ações'].map(h=>`<th>${h}</th>`).join('');
+    const q = $('f_busca').value.toLowerCase();
+    let l = ordensFiltradas();
+    if(q) l = l.filter(o=>(o.protocolo+o.cliente+o.assunto).toLowerCase().includes(q));
+    
+    $('tb-ordens').innerHTML = l.map(o=>{
       const atras = estaAtrasada(o);
-      const p = PRIO[o.prioridade] || PRIO.media;
-      const st = o.status === 'solucionada' ? `<span class="tag ok">Solucionada</span>` : atras ? `<span class="tag bad">Atrasada</span>` : `<span class="tag warn">Aberta</span>`;
-      return `<tr class="${atras ? 'atrasada' : ''}">
-        <td>${esc(o.protocolo) || '—'}</td><td>${esc(o.assunto)}</td><td>${esc(o.cliente) || '—'}</td>
-        <td><span class="tag ${p[0]}">${p[1]}</span></td>
-        <td>${fmtData(o.data_abertura)}</td><td>${fmtData(o.prazo)}</td><td>${st}</td>
-        <td>Abriu: ${esc(nomeColab(o.colab_abertura))}${o.colab_solucao ? `<br>Resolveu: ${esc(nomeColab(o.colab_solucao))}` : ''}</td>
-        <td><div class="actions">
-          ${o.status === 'aberta' ? `<button class="btn-sm btn-success" onclick="finalizarOrdem(${o.id})">Finalizar</button>` : ''}
-          <button class="btn-sm btn-secondary" onclick="abrirOrdem(${o.id})">Editar</button>
-          <button class="btn-sm btn-danger" onclick="excluirOrdem(${o.id})">Excluir</button></div></td></tr>`;
-    }).join('') : `<tr><td colspan="9"><div class="empty"><b>Nenhuma ordem encontrada</b>Altere os filtros/busca ou clique em "+ Nova Ordem".</div></td></tr>`;
+      const st = o.status==='solucionada'?'<span class="tag ok">Solucionada</span>':atras?'<span class="tag bad">Atrasada</span>':'<span class="tag warn">Aberta</span>';
+      return `<tr class="${atras?'atrasada':''}"><td>${esc(o.protocolo)}</td><td>${esc(o.assunto)}</td><td>${esc(o.cliente)}</td><td>${o.prioridade}</td><td>${fmtData(o.data_abertura)}</td><td>${st}</td><td><button class="btn-sm btn-secondary" onclick="abrirOrdem(${o.id})">Editar</button> <button class="btn-sm btn-danger" onclick="excluirOrdem(${o.id})">X</button></td></tr>`;
+    }).join('') || '<tr><td colspan="7" class="empty">Nenhuma ordem encontrada.</td></tr>';
   }
 
-  // ----- Modal de ordem -----
-  function optsColabs(selecionado, vazio) {
-    return (vazio ? '<option value="">— selecione —</option>' : '') +
-      db.colaboradores.map(c => `<option value="${c.id}" ${c.id === selecionado ? 'selected' : ''}>${esc(c.nome)}</option>`).join('');
-  }
+  function optsColabs(sel, vazio) { return (vazio?'<option value="">Selecione</option>':'') + db.colaboradores.map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.nome)}</option>`).join(''); }
+  function toggleSolucao() { $('grupo_solucao').style.display = $('o_status').value==='solucionada'?'grid':'none'; }
+  function sugerirPrazo() { if(!ordemEditando && $('o_dta').value) $('o_prazo').value = addDias($('o_dta').value, SLA_PADRAO_DIAS); }
 
-  function toggleSolucao() {
-    $('grupo_solucao').style.display = $('o_status').value === 'solucionada' ? 'grid' : 'none';
-  }
-
-  function sugerirPrazo() {
-    if (!ordemEditando && $('o_dta').value) $('o_prazo').value = addDias($('o_dta').value, SLA_PADRAO_DIAS);
-  }
-
-  function abrirOrdem(id, finalizar) {
-    if (!db.colaboradores.length) {
-      toast('Cadastre ao menos um colaborador antes de criar ordens. Use o botão de teste.', 'aviso');
-      switchTab('equipe', document.querySelectorAll('.nav')[2]);
-      return;
-    }
-    ordemEditando = id ? db.ordens.find(o => o.id === id) : null;
+  function abrirOrdem(id) {
+    if(!db.colaboradores.length) return toast('Cadastre colaboradores primeiro.', 'aviso');
+    ordemEditando = id ? db.ordens.find(o=>o.id===id) : null;
     const o = ordemEditando || {};
-    $('o_titulo').textContent = ordemEditando ? (finalizar ? 'Finalizar Ordem' : 'Editar Ordem') : 'Nova Ordem de Serviço';
-    $('o_protocolo').value = o.protocolo || '';
-    $('o_cliente').value = o.cliente || '';
-    $('o_assunto').value = o.assunto || '';
-    $('o_prioridade').value = o.prioridade || 'media';
+    $('o_titulo').textContent = id ? 'Editar Ordem' : 'Nova Ordem';
+    $('o_protocolo').value = o.protocolo||''; $('o_cliente').value = o.cliente||''; $('o_assunto').value = o.assunto||'';
     $('o_cab').innerHTML = optsColabs(o.colab_abertura, true);
-    $('o_dta').value = o.data_abertura || hojeISO();
-    $('o_prazo').value = o.prazo || addDias(hojeISO(), SLA_PADRAO_DIAS);
-    $('o_status').value = finalizar ? 'solucionada' : (o.status || 'aberta');
-    $('o_csol').innerHTML = optsColabs(o.colab_solucao, true);
-    $('o_dts').value = o.data_solucao || (finalizar ? hojeISO() : '');
-    $('o_obs').value = o.obs || '';
-    $('o_erro').textContent = '';
-    toggleSolucao();
-    $('dlgOrdem').showModal();
+    $('o_dta').value = o.data_abertura||hojeISO(); $('o_prazo').value = o.prazo||addDias(hojeISO(), SLA_PADRAO_DIAS);
+    $('o_status').value = o.status||'aberta'; $('o_csol').innerHTML = optsColabs(o.colab_solucao, true); $('o_dts').value = o.data_solucao||'';
+    toggleSolucao(); $('dlgOrdem').showModal();
   }
-
-  const finalizarOrdem = id => abrirOrdem(id, true);
 
   function salvarOrdem(e) {
     e.preventDefault();
-    const status = $('o_status').value;
-    const erro = msg => { $('o_erro').textContent = msg; };
-    const dta = $('o_dta').value, dts = $('o_dts').value, csol = Number($('o_csol').value) || null;
-    if (!Number($('o_cab').value)) return erro('Selecione o colaborador de abertura.');
-    if ($('o_prazo').value && $('o_prazo').value < dta) return erro('O prazo não pode ser anterior à data de abertura.');
-    if (status === 'solucionada') {
-      if (!csol) return erro('Selecione o colaborador que resolveu.');
-      if (!dts) return erro('Informe a data de solução.');
-      if (dts < dta) return erro('A data de solução não pode ser anterior à data de abertura.');
-    }
-    const dados = {
-      protocolo: $('o_protocolo').value.trim(), cliente: $('o_cliente').value.trim(), assunto: $('o_assunto').value.trim(),
-      prioridade: $('o_prioridade').value, colab_abertura: Number($('o_cab').value), data_abertura: dta, prazo: $('o_prazo').value || null,
-      status, colab_solucao: status === 'solucionada' ? csol : null, data_solucao: status === 'solucionada' ? dts : null, obs: $('o_obs').value.trim()
-    };
-    if (ordemEditando) { Object.assign(ordemEditando, dados); toast('Ordem atualizada.'); }
-    else { db.ordens.push({ id: uid(), ...dados }); toast('Ordem criada.'); }
-    salvarTudo();
-    fecharModal('dlgOrdem');
-    renderDashboard();
-    renderSugestao();
+    const d = { protocolo:$('o_protocolo').value, assunto:$('o_assunto').value, cliente:$('o_cliente').value, prioridade:$('o_prioridade').value, colab_abertura:Number($('o_cab').value), data_abertura:$('o_dta').value, prazo:$('o_prazo').value, status:$('o_status').value, colab_solucao:$('o_status').value==='solucionada'?Number($('o_csol').value):null, data_solucao:$('o_status').value==='solucionada'?$('o_dts').value:null, obs:$('o_obs').value };
+    if(ordemEditando) Object.assign(ordemEditando, d); else db.ordens.push({id:uid(),...d});
+    salvarTudo(); fecharModal('dlgOrdem'); renderDashboard(); toast('Salvo!');
   }
 
-  async function excluirOrdem(id) {
-    const o = db.ordens.find(x => x.id === id);
-    if (!o || !(await confirmar(`Excluir a ordem "${o.protocolo || o.assunto}"? Esta ação não pode ser desfeita.`))) return;
-    db.ordens = db.ordens.filter(x => x.id !== id);
-    salvarTudo(); renderDashboard(); renderSugestao();
-    toast('Ordem excluída.');
-  }
+  async function excluirOrdem(id) { if(await confirmar('Excluir esta ordem?')){ db.ordens = db.ordens.filter(o=>o.id!==id); salvarTudo(); renderDashboard(); } }
 
-  // ================= PROJETOS & LIÇÕES =================
-  const STATUS_PROJ = { planejamento: ['info', 'Planejamento'], andamento: ['warn', 'Em andamento'], concluido: ['ok', 'Concluído'] };
+  function renderProjetos() { $('lista-projetos').innerHTML = db.projetos.map(p=>`<div class="item-card"><h4>${esc(p.nome)}</h4><p>${esc(p.obj)}</p><button class="btn-sm btn-danger" onclick="db.projetos=db.projetos.filter(x=>x.id!==${p.id});salvarTudo();renderProjetos();">Excluir</button></div>`).join('')||'<p class="empty">Nenhum projeto.</p>'; }
+  function abrirProjeto() { $('dlgProjeto').showModal(); }
+  function salvarProjeto(e) { e.preventDefault(); db.projetos.push({id:uid(), nome:$('p_nome').value, obj:$('p_obj').value, riscos:$('p_riscos').value}); salvarTudo(); fecharModal('dlgProjeto'); renderProjetos(); }
 
-  function renderProjetos() {
-    $('lista-projetos').innerHTML = db.projetos.map(p => {
-      const st = STATUS_PROJ[p.status] || STATUS_PROJ.andamento;
-      return `<div class="item-card">
-        <h4><span>${esc(p.nome)}</span><span class="tag ${st[0]}">${st[1]}</span></h4>
-        <p><strong>Objetivo:</strong> ${esc(p.obj)}</p>
-        <p style="color:var(--bad);"><strong>Riscos:</strong> ${esc(p.riscos) || 'Não informado'}</p>
-        <div class="meta">
-          <span>👤 ${esc(nomeColab(p.responsavel))}</span>
-          <span>👥 ${esc(p.equipe) || 'Sem equipe'}</span>
-          <span>📅 ${fmtData(p.inicio)} → ${fmtData(p.fim)}</span>
-        </div>
-        <div class="actions" style="margin-top:10px;">
-          <button class="btn-sm btn-secondary" onclick="abrirProjeto(${p.id})">Editar</button>
-          <button class="btn-sm btn-danger" onclick="excluirProjeto(${p.id})">Excluir</button>
-        </div></div>`;
-    }).join('') || `<div class="empty"><b>Nenhum projeto cadastrado</b>Clique em "+ Novo Projeto" ou gere dados de teste.</div>`;
-  }
+  function renderLicoes() { $('lista-licoes').innerHTML = db.licoes.map(l=>`<div class="item-card"><h4>Lição</h4><p>${esc(l.lic)}</p><button class="btn-sm btn-danger" onclick="db.licoes=db.licoes.filter(x=>x.id!==${l.id});salvarTudo();renderLicoes();">Excluir</button></div>`).join('')||'<p class="empty">Nenhuma lição.</p>'; }
+  function abrirLicao() { $('l_proj').innerHTML = db.projetos.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join(''); $('dlgLicao').showModal(); }
+  function salvarLicao(e) { e.preventDefault(); db.licoes.push({id:uid(), projetoId:Number($('l_proj').value), sit:$('l_sit').value, acao:$('l_acao').value, res:$('l_res').value, lic:$('l_lic').value}); salvarTudo(); fecharModal('dlgLicao'); renderLicoes(); }
 
-  function renderLicoes() {
-    $('lista-licoes').innerHTML = db.licoes.map(l => {
-      const p = db.projetos.find(x => x.id === l.projetoId);
-      return `<div class="item-card">
-        <h4><span>${esc(p ? p.nome : 'Projeto removido')}</span></h4>
-        <p><strong>Situação:</strong> ${esc(l.sit)}</p>
-        <p><strong>Ação:</strong> ${esc(l.acao)}</p>
-        <p><strong>Resultado:</strong> ${esc(l.res)}</p>
-        <p style="color:var(--ok); font-weight:600;">💡 Lição: ${esc(l.lic)}</p>
-        <div class="actions" style="margin-top:8px;"><button class="btn-sm btn-danger" onclick="excluirLicao(${l.id})">Excluir</button></div></div>`;
-    }).join('') || `<div class="empty"><b>Nenhuma lição registrada</b>Registre o que aprendeu em cada projeto.</div>`;
-  }
+  function renderColabs() { $('lista-colabs').innerHTML = db.colaboradores.map(c=>`<span class="chip">${esc(c.nome)}<button onclick="removerColab(${c.id})">✕</button></span>`).join('')||'<p class="empty">Nenhum colaborador.</p>'; }
+  function adicionarColab(e) { e.preventDefault(); db.colaboradores.push({id:uid(), nome:$('c_nome').value}); $('c_nome').value=''; salvarTudo(); renderColabs(); popularSelects(); }
+  async function removerColab(id) { if(await confirmar('Remover?')){ db.colaboradores = db.colaboradores.filter(c=>c.id!==id); salvarTudo(); renderColabs(); popularSelects(); } }
 
-  function abrirProjeto(id) {
-    projetoEditando = id ? db.projetos.find(p => p.id === id) : null;
-    const p = projetoEditando || {};
-    $('p_titulo').textContent = projetoEditando ? 'Editar Projeto' : 'Cadastrar Projeto (Kick-off)';
-    $('p_nome').value = p.nome || ''; $('p_obj').value = p.obj || ''; $('p_riscos').value = p.riscos || '';
-    $('p_resp').innerHTML = optsColabs(p.responsavel, true);
-    $('p_status').value = p.status || 'planejamento';
-    $('p_ini').value = p.inicio || ''; $('p_fim').value = p.fim || ''; $('p_equipe').value = p.equipe || '';
-    $('p_erro').textContent = '';
-    $('dlgProjeto').showModal();
-  }
+  function renderTiposRec() { $('lista-tipos-rec').innerHTML = db.tipos_reconhecimento.map((t,i)=>`<span class="chip">${esc(t)}<button onclick="removerTipo(${i})">✕</button></span>`).join(''); }
+  function adicionarTipoRec(e) { e.preventDefault(); db.tipos_reconhecimento.push($('t_nome').value); $('t_nome').value=''; salvarTudo(); renderTiposRec(); }
+  async function removerTipo(i) { if(await confirmar('Remover?')){ db.tipos_reconhecimento.splice(i,1); salvarTudo(); renderTiposRec(); } }
 
-  function salvarProjeto(e) {
-    e.preventDefault();
-    const ini = $('p_ini').value, fim = $('p_fim').value;
-    if (ini && fim && fim < ini) { $('p_erro').textContent = 'A data final não pode ser anterior ao início.'; return; }
-    const dados = {
-      nome: $('p_nome').value.trim(), obj: $('p_obj').value.trim(), riscos: $('p_riscos').value.trim(),
-      responsavel: Number($('p_resp').value) || null, status: $('p_status').value, inicio: ini, fim, equipe: $('p_equipe').value.trim()
-    };
-    if (projetoEditando) { Object.assign(projetoEditando, dados); toast('Projeto atualizado.'); }
-    else { db.projetos.push({ id: uid(), ...dados }); toast('Projeto cadastrado.'); }
-    salvarTudo(); fecharModal('dlgProjeto'); renderProjetos(); renderLicoes();
-  }
+  function renderSugestao() { $('sugestao-rec').innerHTML = ''; }
+  function renderReconhecimentos() { $('tb-reconhecimento').innerHTML = db.reconhecimentos.map(r=>`<tr><td>${esc(nomeColab(r.colabId))}</td><td>${esc(r.tipo)}</td><td>${esc(r.motivo)}</td><td>${fmtData(r.data)}</td><td><button class="btn-sm btn-danger" onclick="db.reconhecimentos=db.reconhecimentos.filter(x=>x.id!==${r.id});salvarTudo();renderReconhecimentos();">X</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Vazio.</td></tr>'; }
+  function abrirReconhecimento() { $('r_colab').innerHTML = optsColabs(null, true); $('r_tipo').innerHTML = db.tipos_reconhecimento.map(t=>`<option>${esc(t)}</option>`).join(''); $('dlgRec').showModal(); }
+  function salvarReconhecimento(e) { e.preventDefault(); db.reconhecimentos.push({id:uid(), colabId:Number($('r_colab').value), tipo:$('r_tipo').value, motivo:$('r_motivo').value, data:hojeISO()}); salvarTudo(); fecharModal('dlgRec'); renderReconhecimentos(); }
 
-  async function excluirProjeto(id) {
-    const qtd = db.licoes.filter(l => l.projetoId === id).length;
-    const msg = qtd ? `Excluir o projeto e suas ${qtd} lição(ões) aprendida(s)?` : 'Excluir este projeto?';
-    if (!(await confirmar(msg))) return;
-    db.projetos = db.projetos.filter(p => p.id !== id);
-    db.licoes = db.licoes.filter(l => l.projetoId !== id);
-    salvarTudo(); renderProjetos(); renderLicoes(); toast('Projeto excluído.');
-  }
-
-  function abrirLicao() {
-    if (!db.projetos.length) { toast('Cadastre um projeto antes de registrar lições.', 'aviso'); return; }
-    $('l_proj').innerHTML = '<option value="">— selecione —</option>' + db.projetos.map(p => `<option value="${p.id}">${esc(p.nome)}</option>`).join('');
-    ['l_sit', 'l_acao', 'l_res', 'l_lic'].forEach(i => $(i).value = '');
-    $('dlgLicao').showModal();
-  }
-
-  function salvarLicao(e) {
-    e.preventDefault();
-    db.licoes.push({ id: uid(), projetoId: Number($('l_proj').value), sit: $('l_sit').value.trim(), acao: $('l_acao').value.trim(), res: $('l_res').value.trim(), lic: $('l_lic').value.trim() });
-    salvarTudo(); fecharModal('dlgLicao'); renderLicoes(); toast('Lição registrada.');
-  }
-
-  async function excluirLicao(id) {
-    if (!(await confirmar('Excluir esta lição aprendida?'))) return;
-    db.licoes = db.licoes.filter(l => l.id !== id);
-    salvarTudo(); renderLicoes(); toast('Lição excluída.');
-  }
-
-  // ================= EQUIPE & RECONHECIMENTO =================
-  function renderColabs() {
-    $('lista-colabs').innerHTML = db.colaboradores.map(c =>
-      `<span class="chip">${esc(c.nome)}<button onclick="removerColab(${c.id})" aria-label="Remover ${esc(c.nome)}">✕</button></span>`).join('')
-      || `<div class="empty" style="padding:6px 0;">Nenhum colaborador cadastrado.</div>`;
-  }
-
-  function adicionarColab(e) {
-    e.preventDefault();
-    const nome = $('c_nome').value.trim().replace(/\s+/g, ' ');
-    if (!nome) return;
-    if (db.colaboradores.some(c => c.nome.toLowerCase() === nome.toLowerCase())) { toast('Esse colaborador já está cadastrado.', 'aviso'); return; }
-    db.colaboradores.push({ id: uid(), nome });
-    $('c_nome').value = '';
-    salvarTudo(); renderColabs(); renderSugestao(); popularSelects(); toast('Colaborador adicionado.');
-  }
-
-  async function removerColab(id) {
-    const emUso = db.ordens.some(o => o.colab_abertura === id || o.colab_solucao === id) ||
-      db.projetos.some(p => p.responsavel === id) || db.reconhecimentos.some(r => r.colabId === id);
-    if (emUso) { toast('Não é possível remover: o colaborador tem ordens, projetos ou reconhecimentos vinculados.', 'erro'); return; }
-    if (!(await confirmar(`Remover ${nomeColab(id)}?`))) return;
-    db.colaboradores = db.colaboradores.filter(c => c.id !== id);
-    salvarTudo(); renderColabs(); popularSelects(); toast('Colaborador removido.');
-  }
-
-  // --- Lógica dos Tipos de Reconhecimento ---
-  function renderTiposRec() {
-    $('lista-tipos-rec').innerHTML = db.tipos_reconhecimento.map((t, index) =>
-      `<span class="chip">${esc(t)}<button type="button" onclick="removerTipoRec(${index})" aria-label="Remover ${esc(t)}">✕</button></span>`).join('')
-      || `<div class="empty" style="padding:6px 0;">Nenhum tipo cadastrado.</div>`;
-  }
-
-  function adicionarTipoRec(e) {
-    e.preventDefault();
-    const nome = $('t_nome').value.trim();
-    if (!nome) return;
-    if (db.tipos_reconhecimento.some(t => t.toLowerCase() === nome.toLowerCase())) {
-      toast('Esse tipo já está cadastrado.', 'aviso');
-      return;
-    }
-    db.tipos_reconhecimento.push(nome);
-    $('t_nome').value = '';
-    salvarTudo(); renderTiposRec(); toast('Tipo de reconhecimento adicionado.');
-  }
-
-  async function removerTipoRec(index) {
-    const tipo = db.tipos_reconhecimento[index];
-    const emUso = db.reconhecimentos.some(r => r.tipo === tipo);
-    if (emUso) {
-      toast('Não é possível remover: já existem registros usando este tipo.', 'erro');
-      return;
-    }
-    if (!(await confirmar(`Remover o tipo "${tipo}"?`))) return;
-    db.tipos_reconhecimento.splice(index, 1);
-    salvarTudo(); renderTiposRec(); toast('Tipo removido.');
-  }
-  // ------------------------------------------
-
-  function renderSugestao() {
-    const mes = hojeISO().slice(0, 7);
-    const cont = {};
-    db.ordens.filter(o => o.status === 'solucionada' && o.colab_solucao && o.data_solucao && o.data_solucao.startsWith(mes))
-      .forEach(o => { cont[o.colab_solucao] = (cont[o.colab_solucao] || 0) + 1; });
-    const top = Object.entries(cont).sort((a, b) => b[1] - a[1])[0];
-    $('sugestao-rec').innerHTML = top
-      ? `<div class="sugestao"><span>💡 Sugestão: <b>${esc(nomeColab(Number(top[0])))}</b> resolveu mais ordens neste mês (${top[1]}). Que tal reconhecer?</span>
-         <button class="btn-sm btn-primary" onclick="abrirReconhecimento(${Number(top[0])}, 'Mais ordens solucionadas no mês (${top[1]})')">Reconhecer</button></div>`
-      : '';
-  }
-
-  function renderReconhecimentos() {
-    const lista = [...db.reconhecimentos].sort((a, b) => (b.data || '').localeCompare(a.data || ''));
-    $('tb-reconhecimento').innerHTML = lista.map(r => `<tr>
-        <td><strong>${esc(nomeColab(r.colabId))}</strong></td><td><span class="tag ok">${esc(r.tipo)}</span></td>
-        <td>${esc(r.motivo)}</td><td>${fmtData(r.data)}</td>
-        <td><button class="btn-sm btn-danger" onclick="excluirReconhecimento(${r.id})">Excluir</button></td></tr>`).join('')
-      || `<tr><td colspan="5"><div class="empty"><b>Nenhum reconhecimento registrado</b>Reconhecer o bom trabalho mantém a equipe engajada.</div></td></tr>`;
-  }
-
-  function abrirReconhecimento(colabId, motivo) {
-    if (!db.colaboradores.length) { toast('Cadastre um colaborador primeiro.', 'aviso'); return; }
-    $('r_colab').innerHTML = optsColabs(colabId, true);
-    
-    // Popula o select de tipos de reconhecimento dinamicamente
-    $('r_tipo').innerHTML = db.tipos_reconhecimento.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
-    
-    $('r_motivo').value = motivo || '';
-    $('dlgRec').showModal();
-  }
-
-  function salvarReconhecimento(e) {
-    e.preventDefault();
-    db.reconhecimentos.push({ id: uid(), colabId: Number($('r_colab').value), tipo: $('r_tipo').value, motivo: $('r_motivo').value.trim(), data: hojeISO() });
-    salvarTudo(); fecharModal('dlgRec'); renderReconhecimentos(); toast('Reconhecimento registrado.');
-  }
-
-  async function excluirReconhecimento(id) {
-    if (!(await confirmar('Excluir este reconhecimento?'))) return;
-    db.reconhecimentos = db.reconhecimentos.filter(r => r.id !== id);
-    salvarTudo(); renderReconhecimentos(); toast('Reconhecimento excluído.');
-  }
-
-  // ================= MODAIS =================
-  const fecharModal = id => $(id).close();
-
-  // ================= EXPORTAÇÃO / BACKUP =================
-  function baixar(nome, conteudo, tipo) {
-    const url = URL.createObjectURL(new Blob([conteudo], { type: tipo }));
-    const a = document.createElement('a');
-    a.href = url; a.download = nome; a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-  }
-
-  function exportarCSV() {
-    const celula = v => {
-      let s = String(v ?? '');
-      if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
-      return '"' + s.replace(/"/g, '""') + '"';
-    };
-    const cab = ['Protocolo', 'Assunto', 'Cliente', 'Prioridade', 'Colaborador Abertura', 'Colaborador Solução', 'Data Abertura', 'Prazo', 'Data Solução', 'Status', 'Observações'];
-    const linhas = [cab.map(celula).join(';')];
-    const lista = ordensFiltradas();
-    lista.forEach(o => linhas.push([o.protocolo, o.assunto, o.cliente, o.prioridade, nomeColab(o.colab_abertura), o.colab_solucao ? nomeColab(o.colab_solucao) : '',
-      o.data_abertura, o.prazo || '', o.data_solucao || '', estaAtrasada(o) ? 'atrasada' : o.status, o.obs].map(celula).join(';')));
-    baixar('ordens_servico.csv', '\ufeff' + linhas.join('\r\n'), 'text/csv;charset=utf-8');
-    toast(`${lista.length} ordem(ns) exportada(s) (respeitando os filtros).`);
-  }
-
-  function exportarBackup() {
-    baixar(`backup_gestao_${hojeISO()}.json`, JSON.stringify(db, null, 2), 'application/json');
-    toast('Backup exportado.');
-  }
-
-  function importarBackup(ev) {
-    const arq = ev.target.files[0];
-    ev.target.value = '';
-    if (!arq) return;
-    const leitor = new FileReader();
-    leitor.onload = async () => {
-      try {
-        const dados = JSON.parse(leitor.result);
-        if (!validarDb(dados)) throw new Error('formato');
-        if (!(await confirmar('Importar este backup? Os dados atuais serão substituídos.'))) return;
-        db = dados; salvarTudo(); atualizarTudo(); toast('Backup importado com sucesso.');
-      } catch (e) { toast('Arquivo de backup inválido.', 'erro'); }
-    };
-    leitor.readAsText(arq);
-  }
-
-  // ================= INICIALIZAÇÃO =================
-  function atualizarTudo() {
-    renderColabs(); 
-    renderTiposRec(); // Renderiza os tipos
-    renderSugestao(); 
-    renderReconhecimentos(); 
-    renderProjetos(); 
-    renderLicoes(); 
-    renderDashboard();
-  }
+  function fecharModal(id) { $(id).close(); }
+  function exportarCSV() { const b = new Blob(['\ufeffProtocolo;Assunto;Status\n' + db.ordens.map(o=>`${o.protocolo};${o.assunto};${o.status}`).join('\n')], {type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='ordens.csv'; a.click(); }
+  function exportarBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'})); a.download='backup.json'; a.click(); }
 
   function init() {
-    try { const t = localStorage.getItem('sistema_gestao_tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
-    db = carregar();
-    salvarTudo();
-    const hoje = hojeISO();
-    $('f_de').value = addDias(hoje, -90);
-    $('f_ate').value = hoje;
-    atualizarTudo();
+    try { const t = localStorage.getItem('sistema_gestao_tema'); if(t) document.documentElement.dataset.theme = t; } catch(e){}
+    db = carregar(); const h = hojeISO();
+    $('f_de').value = addDias(h, -90); $('f_ate').value = h;
+    renderColabs(); renderTiposRec(); renderReconhecimentos(); renderProjetos(); renderLicoes(); renderDashboard();
   }
 
-  window.addEventListener('load', init);
+  window.onload = init;
 </script>
 </body>
 </html>
