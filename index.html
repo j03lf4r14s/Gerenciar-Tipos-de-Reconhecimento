@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sistema de Gestão Integrado</title>
+<title>Sistema de Gestão Integrado - Status Mensal</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    /* Nova Paleta Verde-Petróleo */
     --bg:#f4f7f6; --sidebar:#0a2e26; --sidebar-hover:#11453a; --card:#ffffff; 
     --ink:#1e293b; --muted:#64748b; --line:#e2e8f0; --soft:#f8fafc; 
     --brand:#0e7a68; --brand-hover:#0b6354;
@@ -33,7 +32,7 @@
   .nav.active{border-left-color:#34d399;}
   .nav svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
   .side-foot{padding:15px 16px; border-top:1px solid #1e4d40; display:flex; flex-direction:column; gap:8px;}
-  .side-foot button{background:#1e4d40; color:#e2e8f0; width:100%; font-size:12px; padding:8px; display:flex; align-items:center; justify-content:center; gap:6px;}
+  .side-foot button{background:#1e4d40; color:#e2e8f0; width:100%; font-size:12px; padding:10px; display:flex; align-items:center; justify-content:center; gap:6px;}
   .side-foot button:hover{background:#2d6b5c;}
   .side-foot svg{width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:2;}
   .overlay{display:none; position:fixed; inset:0; background:rgba(10,46,38,.6); z-index:40;}
@@ -55,10 +54,8 @@
   .btn-primary{background:var(--brand); color:#fff;} .btn-primary:hover{background:var(--brand-hover);}
   .btn-secondary{background:var(--line); color:var(--ink);} .btn-secondary:hover{filter:brightness(.93);}
   .btn-danger{background:var(--bad); color:#fff;}
-  .btn-success{background:var(--ok); color:#fff;}
   .btn-sm{padding:5px 10px; font-size:12px;}
   .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
-  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:20px;}
   .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:15px; margin-bottom:20px;}
   .kpi{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:18px; display:flex; flex-direction:column;}
   .kpi .lbl{font-size:11px; color:var(--muted); font-weight:700; text-transform:uppercase;}
@@ -68,9 +65,7 @@
   table{width:100%; border-collapse:collapse; font-size:13px;}
   th,td{padding:12px 10px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top;}
   th{font-size:11px; color:var(--muted); text-transform:uppercase; background:var(--soft); white-space:nowrap;}
-  th.sortable{cursor:pointer; user-select:none;} th.sortable:hover{color:var(--brand);}
   tbody tr:hover{background:var(--soft);}
-  tr.atrasada td:first-child{border-left:3px solid var(--bad);}
   .tag{padding:4px 10px; border-radius:12px; font-size:11px; font-weight:700; white-space:nowrap; display:inline-block;}
   .tag.ok{background:var(--tag-ok-bg); color:var(--tag-ok);} .tag.warn{background:var(--tag-warn-bg); color:var(--tag-warn);}
   .tag.bad{background:var(--tag-bad-bg); color:var(--tag-bad);} .tag.info{background:var(--tag-info-bg); color:var(--tag-info);}
@@ -81,18 +76,16 @@
   .filters label{font-size:11px; font-weight:600; color:var(--muted); display:block; margin-bottom:6px;}
   input,select,textarea{font-family:inherit; font-size:14px; color:var(--ink); background:var(--card); border:1px solid var(--line); border-radius:8px; padding:10px 12px;}
   input:focus,select:focus,textarea:focus{outline:2px solid var(--brand); outline-offset:-1px; border-color:transparent;}
-  .chart-box{position:relative; height:280px; width:100%;}
+  .chart-box{position:relative; height:300px; width:100%;}
   .item-list{display:flex; flex-direction:column; gap:10px;}
   .item-card{border:1px solid var(--line); border-radius:10px; padding:18px; background:var(--card); transition:0.2s;}
   .item-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.05); border-color:var(--brand);}
   .item-card h4{font-size:16px; color:var(--brand); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; align-items:center;}
   .item-card p{font-size:13px; color:var(--muted); margin-bottom:8px; line-height:1.5;}
-  .item-card .meta{font-size:12px; color:var(--muted); display:flex; gap:16px; flex-wrap:wrap; margin-top:12px; align-items:center;}
   .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
   .chip{display:inline-flex; align-items:center; gap:8px; background:var(--soft); border:1px solid var(--line); border-radius:20px; padding:6px 6px 6px 14px; font-size:13px; font-weight:500;}
   .chip button{background:none; color:var(--muted); padding:2px 6px; font-size:14px; border-radius:50%;} 
   .chip button:hover{color:var(--bad); background:var(--tag-bad-bg);}
-  .sugestao{background:var(--tag-info-bg); color:var(--tag-info); border-radius:10px; padding:16px; font-size:14px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; border:1px solid rgba(0,0,0,.05);}
 
   /* MODAIS */
   dialog{border:none; border-radius:14px; padding:0; width:min(620px,92vw); box-shadow:0 25px 50px -12px rgba(0,0,0,.25); background:var(--card); color:var(--ink); margin:auto;}
@@ -116,7 +109,7 @@
   @keyframes slideIn{from{transform:translateX(100%); opacity:0;} to{transform:translateX(0); opacity:1;}}
 
   @media(max-width:900px){
-    .grid-2,.grid-3,.form-row{grid-template-columns:1fr;}
+    .grid-2,.form-row{grid-template-columns:1fr;}
     .sidebar{position:fixed; top:0; bottom:0; left:0; transform:translateX(-100%);}
     .sidebar.open{transform:none;} .overlay.open{display:block;}
     .menu-btn{display:inline-block;}
@@ -162,19 +155,10 @@
       Limpar Ordens
     </button>
     <hr style="border-color:#1e4d40; margin:8px 0;">
-    <button onclick="exportarBackup()">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      Exportar Backup
-    </button>
-    <button onclick="document.getElementById('arquivoBackup').click()">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-      Importar Backup
-    </button>
     <button onclick="alternarTema()">
       <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
       Alternar Tema
     </button>
-    <input type="file" id="arquivoBackup" accept=".json,application/json" style="display:none" onchange="importarBackup(event)">
   </div>
 </aside>
 
@@ -195,6 +179,8 @@
 
     <!-- ABA 1: DASHBOARD -->
     <section id="tab-dashboard" class="tab-content active">
+      
+      <!-- Filtros -->
       <div class="card" style="padding:16px;">
         <div class="filters">
           <div><label for="f_de">Período De</label><input type="date" id="f_de" onchange="renderDashboard()"></div>
@@ -202,35 +188,40 @@
           <div><label for="f_colab">Colaborador</label><select id="f_colab" onchange="renderDashboard()"><option value="">Todos</option></select></div>
           <div><label for="f_status">Status</label>
             <select id="f_status" onchange="renderDashboard()">
-              <option value="">Todos</option><option value="aberta">Abertas</option><option value="atrasada">Atrasadas</option><option value="solucionada">Solucionadas</option>
+              <option value="">Todos</option>
+              <option value="abertura_mes">Abertura de Ordem do Mês</option>
+              <option value="atendimento_mes">Quantidade de Atendimento Atendido do Mês</option>
             </select>
           </div>
           <div style="flex:1;"></div>
-          <button class="btn-primary" onclick="abrirOrdem()">+ Nova Ordem</button>
-          <button class="btn-secondary" onclick="exportarCSV()">Exportar CSV</button>
+          <button class="btn-primary" onclick="abrirOrdem()">+ Nova Ordem Manual</button>
         </div>
       </div>
 
-      <div id="alerta-atraso"></div>
       <div class="kpi-grid" id="kpis-ordens"></div>
 
+      <!-- Gráficos Principais -->
       <div class="grid-2">
         <div class="card"><h3>Volume por Colaborador</h3><div class="chart-box" id="box-barra"><canvas id="chBarra"></canvas></div></div>
         <div class="card"><h3>Evolução (3 Meses)</h3><div class="chart-box" id="box-3m"><canvas id="ch3m"></canvas></div></div>
       </div>
-      <div class="grid-2">
-        <div class="card"><h3>Top Assuntos</h3><div class="chart-box" id="box-assunto"><canvas id="chAssunto"></canvas></div></div>
-        <div class="card">
-          <h3>Métrica por Colaborador</h3>
-          <div class="table-wrap"><table>
-            <thead><tr><th>Colaborador</th><th>Abriu</th><th>Resolveu</th><th title="Taxa de Solução">Taxa</th><th>Tempo Médio</th></tr></thead>
-            <tbody id="tb-colab"></tbody>
-          </table></div>
-        </div>
+      
+      <!-- Seção: Matriz Colaborador x Assunto -->
+      <div class="card">
+        <h3>Distribuição de Assuntos por Colaborador</h3>
+        <div class="chart-box" style="height: 350px;"><canvas id="chMatriz"></canvas></div>
       </div>
 
       <div class="card">
-        <h3>Detalhamento de Ordens
+        <h3>Matriz: Colaborador × Assunto (Quantidades)</h3>
+        <div class="table-wrap" id="tabela-matriz-container">
+          <!-- A tabela será injetada aqui via JS -->
+        </div>
+      </div>
+
+      <!-- Tabela de Ordens -->
+      <div class="card">
+        <h3>Histórico de Ordens
           <input type="search" id="f_busca" placeholder="Buscar protocolo, cliente..." oninput="renderTabelaOrdens()" style="min-width:260px; font-weight:400; text-transform:none; letter-spacing:0;">
         </h3>
         <div class="table-wrap"><table>
@@ -278,7 +269,6 @@
 
       <div class="card">
         <h3>Histórico de Reconhecimento <button class="btn-primary" onclick="abrirReconhecimento()">+ Reconhecer Alguém</button></h3>
-        <div id="sugestao-rec"></div>
         <div class="table-wrap"><table>
           <thead><tr><th>Colaborador</th><th>Tipo</th><th>Motivo</th><th>Data</th><th></th></tr></thead>
           <tbody id="tb-reconhecimento"></tbody>
@@ -324,12 +314,17 @@
           <select id="o_prioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option></select></div>
         <div class="form-group"><label>Colaborador (Abertura)</label><select id="o_cab" required></select></div>
       </div>
-      <div class="form-row">
-        <div class="form-group"><label>Data de Abertura</label><input type="date" id="o_dta" required onchange="sugerirPrazo()"></div>
-        <div class="form-group"><label>Prazo (SLA)</label><input type="date" id="o_prazo"></div>
-      </div>
+      
+      <div class="form-group"><label>Data de Abertura</label><input type="date" id="o_dta" required></div>
+      
+      <!-- STATUS ATUALIZADO AQUI -->
       <div class="form-group"><label>Status</label>
-        <select id="o_status" onchange="toggleSolucao()"><option value="aberta">Aberta</option><option value="solucionada">Solucionada</option></select></div>
+        <select id="o_status" onchange="toggleSolucao()">
+          <option value="abertura_mes">Abertura de Ordem do Mês</option>
+          <option value="atendimento_mes">Quantidade de Atendimento Atendido do Mês</option>
+        </select>
+      </div>
+      
       <div class="form-row" id="grupo_solucao" style="display:none;">
         <div class="form-group"><label>Colaborador (Solução)</label><select id="o_csol"></select></div>
         <div class="form-group"><label>Data de Solução</label><input type="date" id="o_dts"></div>
@@ -337,7 +332,7 @@
       <div class="form-group"><label>Observações</label><textarea id="o_obs"></textarea></div>
       <div class="form-error" id="o_erro"></div>
     </div>
-    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgOrdem')">Cancelar</button><button type="submit" class="btn-primary">Salvar</button></div>
+    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgOrdem')">Cancelar</button><button type="submit" class="btn-primary">Salvar Ordem</button></div>
   </form>
 </dialog>
 
@@ -399,23 +394,21 @@
 </dialog>
 
 <script>
-  const KEY = 'sistema_gestao_final';
+  const KEY = 'sistema_gestao_status_mes';
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const uid = () => Date.now() * 1000 + Math.floor(Math.random() * 1000);
   const pad = n => String(n).padStart(2, '0');
   const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const hojeISO = () => iso(new Date());
   const addDias = (s, n) => { const d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() + n); return iso(d); };
-  const difDias = (a, b) => Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000);
   const fmtData = s => s ? s.split('-').reverse().join('/') : '—';
   const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
   const ASSUNTOS_PADRAO = ['2ª VIA DE BOLETO', 'ALTERAÇÃO DE PLANO', 'ACIONAMENTO DISCADOR PRODUTIVO', 'SUPORTE TÉCNICO'];
-  const SLA_PADRAO_DIAS = 5;
   const TIPOS_REC_PADRAO = ['No Particular', 'Em Público', 'Via E-mail', 'Elogio Público', 'Bônus'];
 
   let db = null, charts = {}, sort = { key: 'data_abertura', dir: -1 };
   let ordemEditando = null, projetoEditando = null;
+  let proximoId = 1;
 
   function toast(msg, tipo = '') {
     const el = document.createElement('div');
@@ -440,7 +433,21 @@
   function carregar() {
     try {
       const c = localStorage.getItem(KEY);
-      if (c) { const d = JSON.parse(c); if (d.colaboradores) return d; }
+      if (c) { 
+        const d = JSON.parse(c); 
+        if (d.colaboradores) {
+          if (d.ordens.length > 0) {
+            proximoId = Math.max(...d.ordens.map(o => o.id)) + 1;
+            
+            // Migração de dados antigos para os novos status
+            d.ordens.forEach(o => {
+              if (o.status === 'aberta' || o.status === 'abertura') o.status = 'abertura_mes';
+              if (o.status === 'atendimento' || o.status === 'atendido') o.status = 'atendimento_mes';
+            });
+          }
+          return d; 
+        }
+      }
     } catch (e) {}
     return { colaboradores: [], ordens: [], projetos: [], licoes: [], reconhecimentos: [], tipos_reconhecimento: [...TIPOS_REC_PADRAO] };
   }
@@ -451,16 +458,17 @@
     const getC = () => db.colaboradores[Math.floor(Math.random() * db.colaboradores.length)].id;
     
     for(let i=0; i<15; i++) {
-      const isSoluc = Math.random() > 0.4;
+      const isAtendimento = Math.random() > 0.4;
       const dtAb = addDias(h, -Math.floor(Math.random()*60));
       db.ordens.push({
-        id: uid(), protocolo: `OS-${Math.floor(Math.random()*9000)+1000}`,
+        id: proximoId++,
+        protocolo: `OS-${String(proximoId).padStart(4, '0')}`,
         assunto: ASSUNTOS_PADRAO[Math.floor(Math.random()*ASSUNTOS_PADRAO.length)],
         cliente: `Cliente ${i}`, prioridade: ['baixa','media','alta'][Math.floor(Math.random()*3)],
-        colab_abertura: getC(), data_abertura: dtAb, prazo: addDias(dtAb, SLA_PADRAO_DIAS),
-        status: isSoluc ? 'solucionada' : 'aberta',
-        colab_solucao: isSoluc ? getC() : null, data_solucao: isSoluc ? addDias(dtAb, Math.floor(Math.random()*6)) : null,
-        obs: 'Teste automático.'
+        colab_abertura: getC(), data_abertura: dtAb,
+        status: isAtendimento ? 'atendimento_mes' : 'abertura_mes',
+        colab_solucao: isAtendimento ? getC() : null, data_solucao: isAtendimento ? addDias(dtAb, Math.floor(Math.random()*6)) : null,
+        obs: 'Gerado para teste visual.'
       });
     }
     salvarTudo(); renderDashboard(); toast('15 ordens geradas!');
@@ -468,15 +476,15 @@
 
   async function limparApenasOrdens() {
     if (!db.ordens.length) return toast('Já está vazio.', 'aviso');
-    if (!(await confirmar('Apagar todas as ordens? Os colaboradores e projetos serão mantidos.'))) return;
-    db.ordens = []; salvarTudo(); renderDashboard(); renderSugestao(); toast('Dashboard limpo.');
+    if (!(await confirmar('Apagar todas as ordens do histórico? Os colaboradores, projetos e lições serão mantidos.'))) return;
+    db.ordens = []; proximoId = 1; salvarTudo(); renderDashboard(); toast('Histórico limpo.');
   }
 
   function switchTab(tabId, el) {
     document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav').forEach(a => a.classList.remove('active'));
     $('tab-' + tabId).classList.add('active'); el.classList.add('active');
-    const t = { dashboard: 'Dashboard', projetos: 'Projetos & Lições', equipe: 'Equipe', comunicacao: 'Comunicação' };
+    const t = { dashboard: 'Dashboard de Ordens', projetos: 'Projetos & Lições', equipe: 'Equipe', comunicacao: 'Comunicação' };
     $('page-title').textContent = t[tabId];
     toggleMenu(false);
     if (tabId === 'dashboard') renderDashboard();
@@ -486,10 +494,7 @@
   function alternarTema() { const n = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = n; localStorage.setItem('sistema_gestao_tema', n); renderDashboard(); }
 
   const nomeColab = id => (db.colaboradores.find(c => c.id === id) || {}).nome || '—';
-  const estaAtrasada = o => o.status === 'aberta' && o.prazo && o.prazo < hojeISO();
   const media = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
-  const tempoSolucao = o => (o.status === 'solucionada' && o.data_solucao) ? difDias(o.data_abertura, o.data_solucao) : null;
-  const fmtDias = v => v == null ? '—' : v.toFixed(1).replace('.', ',') + ' dias';
 
   function ordensFiltradas() {
     const de = $('f_de').value, ate = $('f_ate').value, c = Number($('f_colab').value)||0, s = $('f_status').value;
@@ -497,7 +502,6 @@
       if (de && o.data_abertura < de) return false;
       if (ate && o.data_abertura > ate) return false;
       if (c && o.colab_abertura !== c && o.colab_solucao !== c) return false;
-      if (s === 'atrasada') return estaAtrasada(o);
       if (s && o.status !== s) return false;
       return true;
     });
@@ -506,47 +510,116 @@
   function renderDashboard() {
     popularSelects();
     const l = ordensFiltradas();
-    const fin = l.filter(o=>o.status==='solucionada');
-    const atras = l.filter(estaAtrasada).length;
+    const fin = l.filter(o=>o.status==='atendimento_mes');
     const tx = l.length ? (fin.length/l.length*100) : 0;
-    const tmp = media(fin.map(tempoSolucao).filter(v=>v!=null));
 
-    $('alerta-atraso').innerHTML = atras ? `<div class="sugestao" style="background:var(--tag-bad-bg); color:var(--tag-bad);"><b>⚠️ ${atras} ordens atrasadas.</b><button class="btn-sm btn-danger" onclick="$('f_status').value='atrasada'; renderDashboard();">Ver</button></div>` : '';
-    
+    // KPIs com os nomes exatos solicitados
     $('kpis-ordens').innerHTML = `
-      <div class="kpi"><div class="lbl">Abertas</div><div class="val">${l.length}</div></div>
-      <div class="kpi"><div class="lbl">Finalizadas</div><div class="val ok">${fin.length}</div></div>
-      <div class="kpi"><div class="lbl">Atrasadas</div><div class="val ${atras?'bad':'ok'}">${atras}</div></div>
-      <div class="kpi"><div class="lbl">Taxa de Solução</div><div class="val ${tx>=80?'ok':'warn'}">${tx.toFixed(1)}%</div></div>
-      <div class="kpi"><div class="lbl">Tempo Médio</div><div class="val">${fmtDias(tmp)}</div></div>`;
+      <div class="kpi"><div class="lbl">Abertura de Ordem do Mês</div><div class="val">${l.length - fin.length}</div></div>
+      <div class="kpi"><div class="lbl">Atendimento Atendido do Mês</div><div class="val ok">${fin.length}</div></div>
+      <div class="kpi"><div class="lbl">Taxa de Atendimento</div><div class="val ${tx>=80?'ok':'warn'}">${tx.toFixed(1)}%</div></div>`;
 
     const stats = db.colaboradores.map(c => {
       const ab = l.filter(o=>o.colab_abertura===c.id);
-      const rs = l.filter(o=>o.colab_solucao===c.id && o.status==='solucionada');
-      return { nome: c.nome, ab: ab.length, rs: rs.length, tx: ab.length ? (ab.filter(o=>o.status==='solucionada').length/ab.length*100) : 0 };
+      const rs = l.filter(o=>o.colab_solucao===c.id && o.status==='atendimento_mes');
+      return { nome: c.nome, ab: ab.length, rs: rs.length, tx: ab.length ? (ab.filter(o=>o.status==='atendimento_mes').length/ab.length*100) : 0 };
     }).filter(s=>s.ab||s.rs);
 
-    $('tb-colab').innerHTML = stats.map(s=>`<tr><td><b>${esc(s.nome)}</b></td><td>${s.ab}</td><td>${s.rs}</td><td><span class="tag ${s.tx>=80?'ok':'warn'}">${s.tx.toFixed(1)}%</span></td></tr>`).join('') || '<tr><td colspan="4" class="empty">Sem dados.</td></tr>';
-
     renderGraficos(stats, l);
+    renderMatriz(l);
     renderTabelaOrdens();
+  }
+
+  function renderMatriz(ordensFiltradas) {
+    const assuntos = [...new Set(ordensFiltradas.map(o => o.assunto))].sort();
+    const matriz = {}; 
+    
+    db.colaboradores.forEach(c => {
+      matriz[c.id] = { nome: c.nome, assuntos: {}, total: 0 };
+      assuntos.forEach(a => matriz[c.id].assuntos[a] = 0);
+    });
+
+    ordensFiltradas.forEach(o => {
+      if (!matriz[o.colab_abertura]) return;
+      matriz[o.colab_abertura].assuntos[o.assunto] = (matriz[o.colab_abertura].assuntos[o.assunto] || 0) + 1;
+      matriz[o.colab_abertura].total++;
+    });
+
+    const colaboradoresAtivos = Object.values(matriz).filter(c => c.total > 0);
+
+    if (charts.matriz) charts.matriz.destroy();
+    const cores = ['#0e7a68', '#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f43f5e'];
+    
+    const datasets = assuntos.map((a, i) => ({
+      label: a,
+      data: colaboradoresAtivos.map(c => c.assuntos[a]),
+      backgroundColor: cores[i % cores.length],
+      borderRadius: 4
+    }));
+
+    charts.matriz = new Chart($('chMatriz'), {
+      type: 'bar',
+      data: {
+        labels: colaboradoresAtivos.map(c => c.nome),
+        datasets: datasets
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } },
+        scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } } }
+      }
+    });
+
+    let html = '<table><thead><tr><th>Colaborador</th>';
+    assuntos.forEach(a => html += `<th style="text-align:center;">${esc(a)}</th>`);
+    html += '<th style="text-align:center; background:var(--brand); color:white;">Total</th></tr></thead><tbody>';
+
+    colaboradoresAtivos.forEach(c => {
+      html += `<tr><td><strong>${esc(c.nome)}</strong></td>`;
+      assuntos.forEach(a => {
+        const qtd = c.assuntos[a];
+        html += `<td style="text-align:center;">${qtd > 0 ? `<span class="tag info">${qtd}</span>` : '-'}</td>`;
+      });
+      html += `<td style="text-align:center; font-weight:bold; background:var(--soft);">${c.total}</td></tr>`;
+    });
+
+    html += '</tbody></table>';
+    $('tabela-matriz-container').innerHTML = html;
   }
 
   function renderGraficos(stats, l) {
     const opt = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } };
+    
     if(charts.barra) charts.barra.destroy();
-    charts.barra = new Chart($('chBarra'), { type:'bar', data:{ labels:stats.map(s=>s.nome), datasets:[{label:'Abriu',data:stats.map(s=>s.ab),backgroundColor:'#0e7a68'},{label:'Resolveu',data:stats.map(s=>s.rs),backgroundColor:'#10b981'}] }, options: opt });
+    charts.barra = new Chart($('chBarra'), { 
+      type:'bar', 
+      data:{ 
+        labels:stats.map(s=>s.nome), 
+        datasets:[
+          {label:'Abertura de Ordem do Mês',data:stats.map(s=>s.ab),backgroundColor:'#0e7a68'},
+          {label:'Atendimento Atendido do Mês',data:stats.map(s=>s.rs),backgroundColor:'#10b981'}
+        ] 
+      }, 
+      options: opt 
+    });
 
     if(charts.meses) charts.meses.destroy();
     const c = Number($('f_colab').value)||0;
     const base = db.ordens.filter(o=>!c||o.colab_abertura===c||o.colab_solucao===c);
     const d = new Date(); const chaves=[]; const rot=[];
     for(let i=2;i>=0;i--){ const dt = new Date(d.getFullYear(), d.getMonth()-i, 1); chaves.push(`${dt.getFullYear()}-${pad(dt.getMonth()+1)}`); rot.push(MESES[dt.getMonth()]); }
-    charts.meses = new Chart($('ch3m'), { type:'line', data:{ labels:rot, datasets:[{label:'Abriu',data:chaves.map(k=>base.filter(o=>o.data_abertura.startsWith(k)).length),borderColor:'#0e7a68',tension:.3},{label:'Resolveu',data:chaves.map(k=>base.filter(o=>o.status==='solucionada'&&o.data_solucao?.startsWith(k)).length),borderColor:'#10b981',tension:.3}] }, options: opt });
-
-    if(charts.assunto) charts.assunto.destroy();
-    const a = {}; l.forEach(o=>a[o.assunto]=(a[o.assunto]||0)+1);
-    charts.assunto = new Chart($('chAssunto'), { type:'bar', data:{ labels:Object.keys(a), datasets:[{label:'Qtd',data:Object.values(a),backgroundColor:'#0e7a68'}] }, options:{...opt, indexAxis:'y'} });
+    
+    charts.meses = new Chart($('ch3m'), { 
+      type:'line', 
+      data:{ 
+        labels:rot, 
+        datasets:[
+          {label:'Abertura',data:chaves.map(k=>base.filter(o=>o.data_abertura.startsWith(k)).length),borderColor:'#0e7a68',tension:.3},
+          {label:'Atendimento',data:chaves.map(k=>base.filter(o=>o.status==='atendimento_mes'&&o.data_solucao?.startsWith(k)).length),borderColor:'#10b981',tension:.3}
+        ] 
+      }, 
+      options: opt 
+    });
   }
 
   function popularSelects() {
@@ -554,67 +627,106 @@
   }
 
   function renderTabelaOrdens() {
-    $('thead-ordens').innerHTML = ['Protocolo','Assunto','Cliente','Prior.','Abertura','Status','Ações'].map(h=>`<th>${h}</th>`).join('');
+    $('thead-ordens').innerHTML = ['Nº (Seq)','Protocolo','Assunto','Cliente','Abertura','Status','Ações'].map(h=>`<th>${h}</th>`).join('');
     const q = $('f_busca').value.toLowerCase();
     let l = ordensFiltradas();
     if(q) l = l.filter(o=>(o.protocolo+o.cliente+o.assunto).toLowerCase().includes(q));
     
+    l.sort((a,b) => b.id - a.id);
+
     $('tb-ordens').innerHTML = l.map(o=>{
-      const atras = estaAtrasada(o);
-      const st = o.status==='solucionada'?'<span class="tag ok">Solucionada</span>':atras?'<span class="tag bad">Atrasada</span>':'<span class="tag warn">Aberta</span>';
-      return `<tr class="${atras?'atrasada':''}"><td>${esc(o.protocolo)}</td><td>${esc(o.assunto)}</td><td>${esc(o.cliente)}</td><td>${o.prioridade}</td><td>${fmtData(o.data_abertura)}</td><td>${st}</td><td><button class="btn-sm btn-secondary" onclick="abrirOrdem(${o.id})">Editar</button> <button class="btn-sm btn-danger" onclick="excluirOrdem(${o.id})">X</button></td></tr>`;
-    }).join('') || '<tr><td colspan="7" class="empty">Nenhuma ordem encontrada.</td></tr>';
+      let st = '';
+      if (o.status === 'atendimento_mes') {
+        st = '<span class="tag ok">Atendido no Mês</span>';
+      } else {
+        st = '<span class="tag warn">Abertura no Mês</span>';
+      }
+
+      return `<tr>
+        <td><strong>${o.id}</strong></td>
+        <td>${esc(o.protocolo)}</td>
+        <td>${esc(o.assunto)}</td>
+        <td>${esc(o.cliente)}</td>
+        <td>${fmtData(o.data_abertura)}</td>
+        <td>${st}</td>
+        <td><button class="btn-sm btn-secondary" onclick="abrirOrdem(${o.id})">Editar</button> <button class="btn-sm btn-danger" onclick="excluirOrdem(${o.id})">Excluir</button></td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="7" class="empty"><b>Nenhuma ordem cadastrada.</b> Clique em "+ Nova Ordem Manual" para começar.</td></tr>';
   }
 
   function optsColabs(sel, vazio) { return (vazio?'<option value="">Selecione</option>':'') + db.colaboradores.map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.nome)}</option>`).join(''); }
-  function toggleSolucao() { $('grupo_solucao').style.display = $('o_status').value==='solucionada'?'grid':'none'; }
-  function sugerirPrazo() { if(!ordemEditando && $('o_dta').value) $('o_prazo').value = addDias($('o_dta').value, SLA_PADRAO_DIAS); }
-
+  
+  function toggleSolucao() { $('grupo_solucao').style.display = $('o_status').value==='atendimento_mes'?'grid':'none'; }
+  
   function abrirOrdem(id) {
-    if(!db.colaboradores.length) return toast('Cadastre colaboradores primeiro.', 'aviso');
+    if(!db.colaboradores.length) return toast('Cadastre colaboradores na aba "Equipe" antes de criar uma ordem.', 'aviso');
     ordemEditando = id ? db.ordens.find(o=>o.id===id) : null;
     const o = ordemEditando || {};
-    $('o_titulo').textContent = id ? 'Editar Ordem' : 'Nova Ordem';
+    $('o_titulo').textContent = id ? 'Editar Ordem' : 'Nova Ordem Manual';
     $('o_protocolo').value = o.protocolo||''; $('o_cliente').value = o.cliente||''; $('o_assunto').value = o.assunto||'';
     $('o_cab').innerHTML = optsColabs(o.colab_abertura, true);
-    $('o_dta').value = o.data_abertura||hojeISO(); $('o_prazo').value = o.prazo||addDias(hojeISO(), SLA_PADRAO_DIAS);
-    $('o_status').value = o.status||'aberta'; $('o_csol').innerHTML = optsColabs(o.colab_solucao, true); $('o_dts').value = o.data_solucao||'';
+    $('o_dta').value = o.data_abertura||hojeISO();
+    $('o_status').value = o.status||'abertura_mes'; $('o_csol').innerHTML = optsColabs(o.colab_solucao, true); $('o_dts').value = o.data_solucao||'';
     toggleSolucao(); $('dlgOrdem').showModal();
   }
 
   function salvarOrdem(e) {
     e.preventDefault();
-    const d = { protocolo:$('o_protocolo').value, assunto:$('o_assunto').value, cliente:$('o_cliente').value, prioridade:$('o_prioridade').value, colab_abertura:Number($('o_cab').value), data_abertura:$('o_dta').value, prazo:$('o_prazo').value, status:$('o_status').value, colab_solucao:$('o_status').value==='solucionada'?Number($('o_csol').value):null, data_solucao:$('o_status').value==='solucionada'?$('o_dts').value:null, obs:$('o_obs').value };
-    if(ordemEditando) Object.assign(ordemEditando, d); else db.ordens.push({id:uid(),...d});
-    salvarTudo(); fecharModal('dlgOrdem'); renderDashboard(); toast('Salvo!');
+    
+    const isAtendimento = $('o_status').value === 'atendimento_mes';
+    
+    const d = { 
+      protocolo:$('o_protocolo').value, 
+      assunto:$('o_assunto').value, 
+      cliente:$('o_cliente').value, 
+      prioridade:$('o_prioridade').value, 
+      colab_abertura:Number($('o_cab').value), 
+      data_abertura:$('o_dta').value, 
+      status:$('o_status').value, 
+      colab_solucao: isAtendimento ? Number($('o_csol').value) : null, 
+      data_solucao: isAtendimento ? $('o_dts').value : null, 
+      obs:$('o_obs').value 
+    };
+    
+    if(ordemEditando) {
+      Object.assign(ordemEditando, d);
+    } else {
+      db.ordens.push({ id: proximoId++, ...d });
+    }
+    
+    salvarTudo(); fecharModal('dlgOrdem'); renderDashboard(); toast('Ordem salva com sucesso!');
   }
 
-  async function excluirOrdem(id) { if(await confirmar('Excluir esta ordem?')){ db.ordens = db.ordens.filter(o=>o.id!==id); salvarTudo(); renderDashboard(); } }
+  async function excluirOrdem(id) { 
+    if(await confirmar('Excluir esta ordem do histórico?')){ 
+      db.ordens = db.ordens.filter(o=>o.id!==id); 
+      salvarTudo(); 
+      renderDashboard(); 
+      toast('Ordem excluída.');
+    } 
+  }
 
   function renderProjetos() { $('lista-projetos').innerHTML = db.projetos.map(p=>`<div class="item-card"><h4>${esc(p.nome)}</h4><p>${esc(p.obj)}</p><button class="btn-sm btn-danger" onclick="db.projetos=db.projetos.filter(x=>x.id!==${p.id});salvarTudo();renderProjetos();">Excluir</button></div>`).join('')||'<p class="empty">Nenhum projeto.</p>'; }
   function abrirProjeto() { $('dlgProjeto').showModal(); }
-  function salvarProjeto(e) { e.preventDefault(); db.projetos.push({id:uid(), nome:$('p_nome').value, obj:$('p_obj').value, riscos:$('p_riscos').value}); salvarTudo(); fecharModal('dlgProjeto'); renderProjetos(); }
+  function salvarProjeto(e) { e.preventDefault(); db.projetos.push({id:Date.now(), nome:$('p_nome').value, obj:$('p_obj').value, riscos:$('p_riscos').value}); salvarTudo(); fecharModal('dlgProjeto'); renderProjetos(); }
 
   function renderLicoes() { $('lista-licoes').innerHTML = db.licoes.map(l=>`<div class="item-card"><h4>Lição</h4><p>${esc(l.lic)}</p><button class="btn-sm btn-danger" onclick="db.licoes=db.licoes.filter(x=>x.id!==${l.id});salvarTudo();renderLicoes();">Excluir</button></div>`).join('')||'<p class="empty">Nenhuma lição.</p>'; }
   function abrirLicao() { $('l_proj').innerHTML = db.projetos.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join(''); $('dlgLicao').showModal(); }
-  function salvarLicao(e) { e.preventDefault(); db.licoes.push({id:uid(), projetoId:Number($('l_proj').value), sit:$('l_sit').value, acao:$('l_acao').value, res:$('l_res').value, lic:$('l_lic').value}); salvarTudo(); fecharModal('dlgLicao'); renderLicoes(); }
+  function salvarLicao(e) { e.preventDefault(); db.licoes.push({id:Date.now(), projetoId:Number($('l_proj').value), sit:$('l_sit').value, acao:$('l_acao').value, res:$('l_res').value, lic:$('l_lic').value}); salvarTudo(); fecharModal('dlgLicao'); renderLicoes(); }
 
   function renderColabs() { $('lista-colabs').innerHTML = db.colaboradores.map(c=>`<span class="chip">${esc(c.nome)}<button onclick="removerColab(${c.id})">✕</button></span>`).join('')||'<p class="empty">Nenhum colaborador.</p>'; }
-  function adicionarColab(e) { e.preventDefault(); db.colaboradores.push({id:uid(), nome:$('c_nome').value}); $('c_nome').value=''; salvarTudo(); renderColabs(); popularSelects(); }
-  async function removerColab(id) { if(await confirmar('Remover?')){ db.colaboradores = db.colaboradores.filter(c=>c.id!==id); salvarTudo(); renderColabs(); popularSelects(); } }
+  function adicionarColab(e) { e.preventDefault(); db.colaboradores.push({id:Date.now(), nome:$('c_nome').value}); $('c_nome').value=''; salvarTudo(); renderColabs(); popularSelects(); }
+  async function removerColab(id) { if(await confirmar('Remover?')){ db.colaboradores = db.colaboradores.filter(c=>c.id!==id); salvarTudo(); renderColabs(); popularSelects(); renderDashboard(); } }
 
   function renderTiposRec() { $('lista-tipos-rec').innerHTML = db.tipos_reconhecimento.map((t,i)=>`<span class="chip">${esc(t)}<button onclick="removerTipo(${i})">✕</button></span>`).join(''); }
   function adicionarTipoRec(e) { e.preventDefault(); db.tipos_reconhecimento.push($('t_nome').value); $('t_nome').value=''; salvarTudo(); renderTiposRec(); }
   async function removerTipo(i) { if(await confirmar('Remover?')){ db.tipos_reconhecimento.splice(i,1); salvarTudo(); renderTiposRec(); } }
 
-  function renderSugestao() { $('sugestao-rec').innerHTML = ''; }
   function renderReconhecimentos() { $('tb-reconhecimento').innerHTML = db.reconhecimentos.map(r=>`<tr><td>${esc(nomeColab(r.colabId))}</td><td>${esc(r.tipo)}</td><td>${esc(r.motivo)}</td><td>${fmtData(r.data)}</td><td><button class="btn-sm btn-danger" onclick="db.reconhecimentos=db.reconhecimentos.filter(x=>x.id!==${r.id});salvarTudo();renderReconhecimentos();">X</button></td></tr>`).join('')||'<tr><td colspan="5" class="empty">Vazio.</td></tr>'; }
   function abrirReconhecimento() { $('r_colab').innerHTML = optsColabs(null, true); $('r_tipo').innerHTML = db.tipos_reconhecimento.map(t=>`<option>${esc(t)}</option>`).join(''); $('dlgRec').showModal(); }
-  function salvarReconhecimento(e) { e.preventDefault(); db.reconhecimentos.push({id:uid(), colabId:Number($('r_colab').value), tipo:$('r_tipo').value, motivo:$('r_motivo').value, data:hojeISO()}); salvarTudo(); fecharModal('dlgRec'); renderReconhecimentos(); }
+  function salvarReconhecimento(e) { e.preventDefault(); db.reconhecimentos.push({id:Date.now(), colabId:Number($('r_colab').value), tipo:$('r_tipo').value, motivo:$('r_motivo').value, data:hojeISO()}); salvarTudo(); fecharModal('dlgRec'); renderReconhecimentos(); }
 
   function fecharModal(id) { $(id).close(); }
-  function exportarCSV() { const b = new Blob(['\ufeffProtocolo;Assunto;Status\n' + db.ordens.map(o=>`${o.protocolo};${o.assunto};${o.status}`).join('\n')], {type:'text/csv'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='ordens.csv'; a.click(); }
-  function exportarBackup() { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:'application/json'})); a.download='backup.json'; a.click(); }
 
   function init() {
     try { const t = localStorage.getItem('sistema_gestao_tema'); if(t) document.documentElement.dataset.theme = t; } catch(e){}
