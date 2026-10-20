@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sistema de Gestão Integrado - Sem Prioridade</title>
+<title>Sistema de Gestão Integrado - Seleção Mantida</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
@@ -219,16 +219,6 @@
         </div>
       </div>
 
-      <!-- Tabela de Ordens -->
-      <div class="card">
-        <h3>Histórico de Ordens
-          <input type="search" id="f_busca" placeholder="Buscar por assunto..." oninput="renderTabelaOrdens()" style="min-width:260px; font-weight:400; text-transform:none; letter-spacing:0;">
-        </h3>
-        <div class="table-wrap"><table>
-          <thead><tr id="thead-ordens"></tr></thead>
-          <tbody id="tb-ordens"></tbody>
-        </table></div>
-      </div>
     </section>
 
     <!-- ABA 2: PROJETOS & LIÇÕES -->
@@ -299,13 +289,12 @@
 
 <div id="toasts" aria-live="polite"></div>
 
-<!-- MODAL DE ORDEM SEM PRIORIDADE -->
+<!-- MODAL DE ORDEM -->
 <dialog id="dlgOrdem">
   <form onsubmit="salvarOrdem(event)">
     <div class="dlg-head"><h4 id="o_titulo">Lançamento de Ordens</h4><button type="button" onclick="fecharModal('dlgOrdem')">✕</button></div>
     <div class="dlg-body">
       
-      <!-- Campo Assunto Editável -->
       <div class="form-group">
         <label>Assunto (Digite ou Selecione)</label>
         <input type="text" id="o_assunto" list="lista_assuntos" required placeholder="Ex: REPARO- SEM CONEXÃO">
@@ -328,7 +317,6 @@
         <div class="form-group"><label>Data de Final</label><input type="date" id="o_dt_fim"></div>
       </div>
       
-      <!-- Status em linha única agora -->
       <div class="form-group"><label>Status</label>
         <select id="o_status" onchange="toggleSolucao()">
           <option value="abertura_mes">Abertura de Ordem do Mês</option>
@@ -404,7 +392,7 @@
 </dialog>
 
 <script>
-  const KEY = 'sistema_gestao_sem_prioridade';
+  const KEY = 'sistema_gestao_selecao';
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const pad = n => String(n).padStart(2, '0');
@@ -429,7 +417,7 @@
   
   const TIPOS_REC_PADRAO = ['No Particular', 'Em Público', 'Via E-mail', 'Elogio Público', 'Bônus'];
 
-  let db = null, charts = {}, sort = { key: 'data_inicio', dir: -1 };
+  let db = null, charts = {};
   let ordemEditando = null, projetoEditando = null;
   let proximoId = 1;
 
@@ -539,7 +527,6 @@
 
     renderGraficos(stats, l);
     renderMatriz(l);
-    renderTabelaOrdens();
   }
 
   function renderMatriz(ordensFiltradas) {
@@ -634,39 +621,25 @@
     });
   }
 
+  // -----------------------------------------------------
+  // CORREÇÃO AQUI: Mantém o nome do colaborador selecionado no filtro
+  // -----------------------------------------------------
   function popularSelects() {
-    $('f_colab').innerHTML = '<option value="">Todos</option>' + db.colaboradores.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+    const selectFiltro = $('f_colab');
+    const valorAtual = selectFiltro.value; // Guarda quem está selecionado antes de recriar a lista
+
+    selectFiltro.innerHTML = '<option value="">Todos</option>' + db.colaboradores.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
+    
+    // Se havia um colaborador selecionado, marca ele novamente
+    if (valorAtual) {
+        selectFiltro.value = valorAtual;
+    }
   }
 
-  function renderTabelaOrdens() {
-    $('thead-ordens').innerHTML = ['Nº (Seq)','Assunto','Início','Final','Status','Ações'].map(h=>`<th>${h}</th>`).join('');
-    
-    const q = $('f_busca').value.toLowerCase();
-    let l = ordensFiltradas();
-    if(q) l = l.filter(o=>o.assunto.toLowerCase().includes(q));
-    
-    l.sort((a,b) => b.id - a.id);
-
-    $('tb-ordens').innerHTML = l.map(o=>{
-      let st = '';
-      if (o.status === 'atendimento_mes') {
-        st = '<span class="tag ok">Atendido no Mês</span>';
-      } else {
-        st = '<span class="tag warn">Abertura no Mês</span>';
-      }
-
-      return `<tr>
-        <td><strong>${o.id}</strong></td>
-        <td>${esc(o.assunto)}</td>
-        <td>${fmtData(o.data_inicio)}</td>
-        <td>${o.data_final ? fmtData(o.data_final) : '—'}</td>
-        <td>${st}</td>
-        <td><button class="btn-sm btn-secondary" onclick="abrirOrdem(${o.id})">Editar</button> <button class="btn-sm btn-danger" onclick="excluirOrdem(${o.id})">Excluir</button></td>
-      </tr>`;
-    }).join('') || '<tr><td colspan="6" class="empty"><b>Nenhuma ordem cadastrada.</b> Clique em "+ Lançar Ordens" para começar.</td></tr>';
+  function optsColabs(sel, vazio) { 
+    return (vazio?'<option value="">Selecione</option>':'') + 
+           db.colaboradores.map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.nome)}</option>`).join(''); 
   }
-
-  function optsColabs(sel, vazio) { return (vazio?'<option value="">Selecione</option>':'') + db.colaboradores.map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.nome)}</option>`).join(''); }
   
   function toggleSolucao() { $('grupo_solucao').style.display = $('o_status').value==='atendimento_mes'?'grid':'none'; }
   
@@ -680,10 +653,13 @@
     $('lista_assuntos').innerHTML = ASSUNTOS_SUGERIDOS.map(a => `<option value="${esc(a)}">`).join('');
     $('o_assunto').value = o.assunto || '';
     
+    // Aqui ele marca o nome do colaborador que já está salvo na ordem
     $('o_cab').innerHTML = optsColabs(o.colab_abertura, true);
     $('o_dt_ini').value = o.data_inicio || hojeISO();
     $('o_dt_fim').value = o.data_final || '';
     $('o_status').value = o.status || 'abertura_mes'; 
+    
+    // Aqui ele marca o nome de quem resolveu (se houver)
     $('o_csol').innerHTML = optsColabs(o.colab_solucao, true); 
     $('o_qtd').value = 1; 
     
