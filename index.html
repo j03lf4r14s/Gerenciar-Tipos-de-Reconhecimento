@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Sistema de Gestão Integrado - Status Mensal</title>
+<title>Sistema de Gestão Integrado - Sem Prioridade</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
@@ -194,7 +194,7 @@
             </select>
           </div>
           <div style="flex:1;"></div>
-          <button class="btn-primary" onclick="abrirOrdem()">+ Nova Ordem Manual</button>
+          <button class="btn-primary" onclick="abrirOrdem()">+ Lançar Ordens</button>
         </div>
       </div>
 
@@ -222,7 +222,7 @@
       <!-- Tabela de Ordens -->
       <div class="card">
         <h3>Histórico de Ordens
-          <input type="search" id="f_busca" placeholder="Buscar protocolo, cliente..." oninput="renderTabelaOrdens()" style="min-width:260px; font-weight:400; text-transform:none; letter-spacing:0;">
+          <input type="search" id="f_busca" placeholder="Buscar por assunto..." oninput="renderTabelaOrdens()" style="min-width:260px; font-weight:400; text-transform:none; letter-spacing:0;">
         </h3>
         <div class="table-wrap"><table>
           <thead><tr id="thead-ordens"></tr></thead>
@@ -299,25 +299,36 @@
 
 <div id="toasts" aria-live="polite"></div>
 
-<!-- MODAIS -->
+<!-- MODAL DE ORDEM SEM PRIORIDADE -->
 <dialog id="dlgOrdem">
   <form onsubmit="salvarOrdem(event)">
-    <div class="dlg-head"><h4 id="o_titulo">Nova Ordem</h4><button type="button" onclick="fecharModal('dlgOrdem')">✕</button></div>
+    <div class="dlg-head"><h4 id="o_titulo">Lançamento de Ordens</h4><button type="button" onclick="fecharModal('dlgOrdem')">✕</button></div>
     <div class="dlg-body">
-      <div class="form-row">
-        <div class="form-group"><label>Protocolo</label><input type="text" id="o_protocolo" placeholder="Ex: OS-1001"></div>
-        <div class="form-group"><label>Cliente</label><input type="text" id="o_cliente"></div>
-      </div>
-      <div class="form-group"><label>Assunto</label><input type="text" id="o_assunto" list="dl_assuntos" required><datalist id="dl_assuntos"></datalist></div>
-      <div class="form-row">
-        <div class="form-group"><label>Prioridade</label>
-          <select id="o_prioridade"><option value="baixa">Baixa</option><option value="media" selected>Média</option><option value="alta">Alta</option></select></div>
-        <div class="form-group"><label>Colaborador (Abertura)</label><select id="o_cab" required></select></div>
+      
+      <!-- Campo Assunto Editável -->
+      <div class="form-group">
+        <label>Assunto (Digite ou Selecione)</label>
+        <input type="text" id="o_assunto" list="lista_assuntos" required placeholder="Ex: REPARO- SEM CONEXÃO">
+        <datalist id="lista_assuntos"></datalist>
       </div>
       
-      <div class="form-group"><label>Data de Abertura</label><input type="date" id="o_dta" required></div>
+      <div class="form-row">
+        <div class="form-group">
+            <label>Quantidade de Ordens</label>
+            <input type="number" id="o_qtd" min="1" value="1" required>
+        </div>
+        <div class="form-group">
+            <label>Colaborador (Abertura)</label>
+            <select id="o_cab" required></select>
+        </div>
+      </div>
       
-      <!-- STATUS ATUALIZADO AQUI -->
+      <div class="form-row">
+        <div class="form-group"><label>Data de Início</label><input type="date" id="o_dt_ini" required></div>
+        <div class="form-group"><label>Data de Final</label><input type="date" id="o_dt_fim"></div>
+      </div>
+      
+      <!-- Status em linha única agora -->
       <div class="form-group"><label>Status</label>
         <select id="o_status" onchange="toggleSolucao()">
           <option value="abertura_mes">Abertura de Ordem do Mês</option>
@@ -327,12 +338,11 @@
       
       <div class="form-row" id="grupo_solucao" style="display:none;">
         <div class="form-group"><label>Colaborador (Solução)</label><select id="o_csol"></select></div>
-        <div class="form-group"><label>Data de Solução</label><input type="date" id="o_dts"></div>
       </div>
-      <div class="form-group"><label>Observações</label><textarea id="o_obs"></textarea></div>
+      
       <div class="form-error" id="o_erro"></div>
     </div>
-    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgOrdem')">Cancelar</button><button type="submit" class="btn-primary">Salvar Ordem</button></div>
+    <div class="dlg-foot"><button type="button" class="btn-secondary" onclick="fecharModal('dlgOrdem')">Cancelar</button><button type="submit" class="btn-primary">Salvar Lançamento</button></div>
   </form>
 </dialog>
 
@@ -394,7 +404,7 @@
 </dialog>
 
 <script>
-  const KEY = 'sistema_gestao_status_mes';
+  const KEY = 'sistema_gestao_sem_prioridade';
   const $ = id => document.getElementById(id);
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const pad = n => String(n).padStart(2, '0');
@@ -403,10 +413,23 @@
   const addDias = (s, n) => { const d = new Date(s + 'T00:00:00'); d.setDate(d.getDate() + n); return iso(d); };
   const fmtData = s => s ? s.split('-').reverse().join('/') : '—';
   const MESES = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const ASSUNTOS_PADRAO = ['2ª VIA DE BOLETO', 'ALTERAÇÃO DE PLANO', 'ACIONAMENTO DISCADOR PRODUTIVO', 'SUPORTE TÉCNICO'];
+  
+  const ASSUNTOS_SUGERIDOS = [
+    'REPARO- SEM CONEXÃO',
+    'REPARO - CLIENTE ATENUADO',
+    'REPARO - REPARO AUTOMATICO',
+    'REPARO - TROCA DE EQUIPAMENTO',
+    'REPARO - REPARO DE OSCILAÇÃO',
+    'REPARO - REPETIDOR DE SINAL',
+    'INSTALAÇÃO - CABO DE REDE',
+    'REPARO - REPARO APLICATIVOS',
+    'REPARO - SERVIÇO PENDENTE',
+    'SERVIÇOS - INSTALAÇÃO DE REPETIDOR'
+  ];
+  
   const TIPOS_REC_PADRAO = ['No Particular', 'Em Público', 'Via E-mail', 'Elogio Público', 'Bônus'];
 
-  let db = null, charts = {}, sort = { key: 'data_abertura', dir: -1 };
+  let db = null, charts = {}, sort = { key: 'data_inicio', dir: -1 };
   let ordemEditando = null, projetoEditando = null;
   let proximoId = 1;
 
@@ -438,12 +461,6 @@
         if (d.colaboradores) {
           if (d.ordens.length > 0) {
             proximoId = Math.max(...d.ordens.map(o => o.id)) + 1;
-            
-            // Migração de dados antigos para os novos status
-            d.ordens.forEach(o => {
-              if (o.status === 'aberta' || o.status === 'abertura') o.status = 'abertura_mes';
-              if (o.status === 'atendimento' || o.status === 'atendido') o.status = 'atendimento_mes';
-            });
           }
           return d; 
         }
@@ -457,21 +474,18 @@
     const h = hojeISO();
     const getC = () => db.colaboradores[Math.floor(Math.random() * db.colaboradores.length)].id;
     
-    for(let i=0; i<15; i++) {
+    for(let i=0; i<20; i++) {
       const isAtendimento = Math.random() > 0.4;
-      const dtAb = addDias(h, -Math.floor(Math.random()*60));
+      const dtIni = addDias(h, -Math.floor(Math.random()*60));
       db.ordens.push({
         id: proximoId++,
-        protocolo: `OS-${String(proximoId).padStart(4, '0')}`,
-        assunto: ASSUNTOS_PADRAO[Math.floor(Math.random()*ASSUNTOS_PADRAO.length)],
-        cliente: `Cliente ${i}`, prioridade: ['baixa','media','alta'][Math.floor(Math.random()*3)],
-        colab_abertura: getC(), data_abertura: dtAb,
+        assunto: ASSUNTOS_SUGERIDOS[Math.floor(Math.random()*ASSUNTOS_SUGERIDOS.length)],
+        colab_abertura: getC(), data_inicio: dtIni,
         status: isAtendimento ? 'atendimento_mes' : 'abertura_mes',
-        colab_solucao: isAtendimento ? getC() : null, data_solucao: isAtendimento ? addDias(dtAb, Math.floor(Math.random()*6)) : null,
-        obs: 'Gerado para teste visual.'
+        colab_solucao: isAtendimento ? getC() : null, data_final: isAtendimento ? addDias(dtIni, Math.floor(Math.random()*6)) : null
       });
     }
-    salvarTudo(); renderDashboard(); toast('15 ordens geradas!');
+    salvarTudo(); renderDashboard(); toast('20 ordens geradas!');
   }
 
   async function limparApenasOrdens() {
@@ -494,13 +508,12 @@
   function alternarTema() { const n = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = n; localStorage.setItem('sistema_gestao_tema', n); renderDashboard(); }
 
   const nomeColab = id => (db.colaboradores.find(c => c.id === id) || {}).nome || '—';
-  const media = arr => arr.length ? arr.reduce((a, b) => a + b, 0) / arr.length : null;
 
   function ordensFiltradas() {
     const de = $('f_de').value, ate = $('f_ate').value, c = Number($('f_colab').value)||0, s = $('f_status').value;
     return db.ordens.filter(o => {
-      if (de && o.data_abertura < de) return false;
-      if (ate && o.data_abertura > ate) return false;
+      if (de && o.data_inicio < de) return false;
+      if (ate && o.data_inicio > ate) return false;
       if (c && o.colab_abertura !== c && o.colab_solucao !== c) return false;
       if (s && o.status !== s) return false;
       return true;
@@ -513,7 +526,6 @@
     const fin = l.filter(o=>o.status==='atendimento_mes');
     const tx = l.length ? (fin.length/l.length*100) : 0;
 
-    // KPIs com os nomes exatos solicitados
     $('kpis-ordens').innerHTML = `
       <div class="kpi"><div class="lbl">Abertura de Ordem do Mês</div><div class="val">${l.length - fin.length}</div></div>
       <div class="kpi"><div class="lbl">Atendimento Atendido do Mês</div><div class="val ok">${fin.length}</div></div>
@@ -614,8 +626,8 @@
       data:{ 
         labels:rot, 
         datasets:[
-          {label:'Abertura',data:chaves.map(k=>base.filter(o=>o.data_abertura.startsWith(k)).length),borderColor:'#0e7a68',tension:.3},
-          {label:'Atendimento',data:chaves.map(k=>base.filter(o=>o.status==='atendimento_mes'&&o.data_solucao?.startsWith(k)).length),borderColor:'#10b981',tension:.3}
+          {label:'Abertura',data:chaves.map(k=>base.filter(o=>o.data_inicio.startsWith(k)).length),borderColor:'#0e7a68',tension:.3},
+          {label:'Atendimento',data:chaves.map(k=>base.filter(o=>o.status==='atendimento_mes'&&o.data_final?.startsWith(k)).length),borderColor:'#10b981',tension:.3}
         ] 
       }, 
       options: opt 
@@ -627,10 +639,11 @@
   }
 
   function renderTabelaOrdens() {
-    $('thead-ordens').innerHTML = ['Nº (Seq)','Protocolo','Assunto','Cliente','Abertura','Status','Ações'].map(h=>`<th>${h}</th>`).join('');
+    $('thead-ordens').innerHTML = ['Nº (Seq)','Assunto','Início','Final','Status','Ações'].map(h=>`<th>${h}</th>`).join('');
+    
     const q = $('f_busca').value.toLowerCase();
     let l = ordensFiltradas();
-    if(q) l = l.filter(o=>(o.protocolo+o.cliente+o.assunto).toLowerCase().includes(q));
+    if(q) l = l.filter(o=>o.assunto.toLowerCase().includes(q));
     
     l.sort((a,b) => b.id - a.id);
 
@@ -644,14 +657,13 @@
 
       return `<tr>
         <td><strong>${o.id}</strong></td>
-        <td>${esc(o.protocolo)}</td>
         <td>${esc(o.assunto)}</td>
-        <td>${esc(o.cliente)}</td>
-        <td>${fmtData(o.data_abertura)}</td>
+        <td>${fmtData(o.data_inicio)}</td>
+        <td>${o.data_final ? fmtData(o.data_final) : '—'}</td>
         <td>${st}</td>
         <td><button class="btn-sm btn-secondary" onclick="abrirOrdem(${o.id})">Editar</button> <button class="btn-sm btn-danger" onclick="excluirOrdem(${o.id})">Excluir</button></td>
       </tr>`;
-    }).join('') || '<tr><td colspan="7" class="empty"><b>Nenhuma ordem cadastrada.</b> Clique em "+ Nova Ordem Manual" para começar.</td></tr>';
+    }).join('') || '<tr><td colspan="6" class="empty"><b>Nenhuma ordem cadastrada.</b> Clique em "+ Lançar Ordens" para começar.</td></tr>';
   }
 
   function optsColabs(sel, vazio) { return (vazio?'<option value="">Selecione</option>':'') + db.colaboradores.map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${esc(c.nome)}</option>`).join(''); }
@@ -662,39 +674,47 @@
     if(!db.colaboradores.length) return toast('Cadastre colaboradores na aba "Equipe" antes de criar uma ordem.', 'aviso');
     ordemEditando = id ? db.ordens.find(o=>o.id===id) : null;
     const o = ordemEditando || {};
-    $('o_titulo').textContent = id ? 'Editar Ordem' : 'Nova Ordem Manual';
-    $('o_protocolo').value = o.protocolo||''; $('o_cliente').value = o.cliente||''; $('o_assunto').value = o.assunto||'';
+    
+    $('o_titulo').textContent = id ? 'Editar Ordem' : 'Lançamento de Ordens';
+    
+    $('lista_assuntos').innerHTML = ASSUNTOS_SUGERIDOS.map(a => `<option value="${esc(a)}">`).join('');
+    $('o_assunto').value = o.assunto || '';
+    
     $('o_cab').innerHTML = optsColabs(o.colab_abertura, true);
-    $('o_dta').value = o.data_abertura||hojeISO();
-    $('o_status').value = o.status||'abertura_mes'; $('o_csol').innerHTML = optsColabs(o.colab_solucao, true); $('o_dts').value = o.data_solucao||'';
-    toggleSolucao(); $('dlgOrdem').showModal();
+    $('o_dt_ini').value = o.data_inicio || hojeISO();
+    $('o_dt_fim').value = o.data_final || '';
+    $('o_status').value = o.status || 'abertura_mes'; 
+    $('o_csol').innerHTML = optsColabs(o.colab_solucao, true); 
+    $('o_qtd').value = 1; 
+    
+    toggleSolucao(); 
+    $('dlgOrdem').showModal();
   }
 
   function salvarOrdem(e) {
     e.preventDefault();
     
     const isAtendimento = $('o_status').value === 'atendimento_mes';
+    const qtd = Number($('o_qtd').value) || 1;
     
-    const d = { 
-      protocolo:$('o_protocolo').value, 
+    const baseData = { 
       assunto:$('o_assunto').value, 
-      cliente:$('o_cliente').value, 
-      prioridade:$('o_prioridade').value, 
       colab_abertura:Number($('o_cab').value), 
-      data_abertura:$('o_dta').value, 
+      data_inicio:$('o_dt_ini').value, 
       status:$('o_status').value, 
       colab_solucao: isAtendimento ? Number($('o_csol').value) : null, 
-      data_solucao: isAtendimento ? $('o_dts').value : null, 
-      obs:$('o_obs').value 
+      data_final: isAtendimento ? $('o_dt_fim').value : null 
     };
     
     if(ordemEditando) {
-      Object.assign(ordemEditando, d);
+      Object.assign(ordemEditando, baseData);
     } else {
-      db.ordens.push({ id: proximoId++, ...d });
+      for(let i = 0; i < qtd; i++) {
+        db.ordens.push({ id: proximoId++, ...baseData });
+      }
     }
     
-    salvarTudo(); fecharModal('dlgOrdem'); renderDashboard(); toast('Ordem salva com sucesso!');
+    salvarTudo(); fecharModal('dlgOrdem'); renderDashboard(); toast(`${qtd} ordem(ns) salva(s) com sucesso!`);
   }
 
   async function excluirOrdem(id) { 
