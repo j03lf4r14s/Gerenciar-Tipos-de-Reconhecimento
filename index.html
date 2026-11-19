@@ -97,6 +97,27 @@
   .legend-item { display: flex; align-items: center; gap: 5px; }
   .legend-box { width: 12px; height: 12px; border-radius: 2px; }
   
+  /* COMPONENTES DE PROJETOS E LIÇÕES */
+  .item-list{display:flex; flex-direction:column; gap:10px;}
+  .item-card{border:1px solid var(--line); border-radius:10px; padding:18px; background:var(--card); transition:0.2s;}
+  .item-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.05); border-color:var(--brand);}
+  .item-card h4{font-size:16px; color:var(--brand); margin-bottom:8px; display:flex; justify-content:space-between; gap:8px; align-items:center;}
+  
+  /* AQUI ESTÁ A MÁGICA PARA RESPEITAR OS ESPAÇOS E QUEBRAS DE LINHA */
+  .item-card p, .item-card .text-block {
+      white-space: pre-wrap; 
+      word-break: break-word;
+      font-size:13px; 
+      color:var(--muted); 
+      margin-bottom:8px; 
+      line-height:1.5;
+  }
+
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
+  .chip{display:inline-flex; align-items:center; gap:8px; background:var(--soft); border:1px solid var(--line); border-radius:20px; padding:6px 6px 6px 14px; font-size:13px; font-weight:500;}
+  .chip button{background:none; color:var(--muted); padding:2px 6px; font-size:14px; border-radius:50%;} 
+  .chip button:hover{color:var(--bad); background:var(--tag-bad-bg);}
+
   /* MODAIS GERAIS */
   dialog{border:none; border-radius:14px; padding:0; width:min(620px,92vw); box-shadow:0 25px 50px -12px rgba(0,0,0,.25); background:var(--card); color:var(--ink); margin:auto;}
   dialog::backdrop{background:rgba(10,46,38,.7); backdrop-filter:blur(2px);}
@@ -312,7 +333,7 @@
       </div>
     </section>
 
-    <!-- ABA 3: PROJETOS -->
+    <!-- ABA 3: PROJETOS & LIÇÕES -->
     <section id="tab-projetos" class="tab-content">
       <div class="grid-2">
         <div class="card">
@@ -357,7 +378,7 @@
       </div>
     </section>
 
-    <!-- ABA 5: COMUNICAÇÃO (AGORA EDITÁVEL) -->
+    <!-- ABA 5: COMUNICAÇÃO -->
     <section id="tab-comunicacao" class="tab-content">
       <div class="card">
         <h3>Guia de Comunicação Eficiente <button class="btn-primary" onclick="abrirComunicacao()">+ Nova Regra</button></h3>
@@ -374,9 +395,7 @@
 
 <div id="toasts" aria-live="polite"></div>
 
-<!-- ========================================= -->
 <!-- MODAL DE VIDRO (ESCALA) -->
-<!-- ========================================= -->
 <div class="modal-glass-overlay" id="modal-escala">
     <div class="modal-glass">
         <div class="modal-glass-header">
@@ -614,12 +633,10 @@
       if (c) { 
         const d = JSON.parse(c); 
         if (d.colaboradores) {
-          // --- GARANTE QUE A COMUNICAÇÃO EXISTE EM BANCOS ANTIGOS ---
           if (!d.comunicacao) {
             d.comunicacao = [...COMUNICACAO_PADRAO];
             localStorage.setItem(KEY, JSON.stringify(d));
           }
-          
           if (d.ordens.length > 0) proximoId = Math.max(...d.ordens.map(o => o.id)) + 1;
           return d; 
         }
@@ -661,10 +678,10 @@
     $('page-title').textContent = t[tabId];
     toggleMenu(false);
     
-    // Renderiza a aba específica
     if (tabId === 'dashboard') renderDashboard();
     if (tabId === 'escala') renderizarEscala();
     if (tabId === 'comunicacao') renderComunicacao();
+    if (tabId === 'projetos') { renderProjetos(); renderLicoes(); }
   }
 
   function toggleMenu(abrir) { $('sidebar').classList.toggle('open', abrir); $('overlay').classList.toggle('open', abrir); }
@@ -823,14 +840,70 @@
     if(await confirmar('Excluir esta ordem do histórico?')){ db.ordens = db.ordens.filter(o=>o.id!==id); salvarTudo(); renderDashboard(); toast('Ordem excluída.'); } 
   }
 
-  function renderProjetos() { $('lista-projetos').innerHTML = db.projetos.map(p=>`<div class="item-card"><h4>${esc(p.nome)}</h4><p>${esc(p.obj)}</p><button class="btn-sm btn-danger" onclick="db.projetos=db.projetos.filter(x=>x.id!==${p.id});salvarTudo();renderProjetos();">Excluir</button></div>`).join('')||'<p class="empty">Nenhum projeto.</p>'; }
+  // ==========================================
+  // PROJETOS E LIÇÕES (COM FORMATAÇÃO PRESERVADA)
+  // ==========================================
+  function renderProjetos() { 
+    $('lista-projetos').innerHTML = db.projetos.map(p=>`
+      <div class="item-card">
+        <h4>${esc(p.nome)}</h4>
+        <p style="white-space: pre-wrap; word-break: break-word;">${esc(p.obj)}</p>
+        ${p.riscos ? `<p style="white-space: pre-wrap; word-break: break-word; color:var(--warn); font-size:12px;"><b>Riscos:</b><br>${esc(p.riscos)}</p>` : ''}
+        <button class="btn-sm btn-danger" onclick="db.projetos=db.projetos.filter(x=>x.id!==${p.id});salvarTudo();renderProjetos();">Excluir</button>
+      </div>
+    `).join('') || '<p class="empty">Nenhum projeto.</p>'; 
+  }
+
   function abrirProjeto() { $('dlgProjeto').showModal(); }
   function salvarProjeto(e) { e.preventDefault(); db.projetos.push({id:Date.now(), nome:$('p_nome').value, obj:$('p_obj').value, riscos:$('p_riscos').value}); salvarTudo(); fecharModal('dlgProjeto'); renderProjetos(); }
 
-  function renderLicoes() { $('lista-licoes').innerHTML = db.licoes.map(l=>`<div class="item-card"><h4>Lição</h4><p>${esc(l.lic)}</p><button class="btn-sm btn-danger" onclick="db.licoes=db.licoes.filter(x=>x.id!==${l.id});salvarTudo();renderLicoes();">Excluir</button></div>`).join('')||'<p class="empty">Nenhuma lição.</p>'; }
-  function abrirLicao() { $('l_proj').innerHTML = db.projetos.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join(''); $('dlgLicao').showModal(); }
-  function salvarLicao(e) { e.preventDefault(); db.licoes.push({id:Date.now(), projetoId:Number($('l_proj').value), sit:$('l_sit').value, acao:$('l_acao').value, res:$('l_res').value, lic:$('l_lic').value}); salvarTudo(); fecharModal('dlgLicao'); renderLicoes(); }
+  function renderLicoes() { 
+    $('lista-licoes').innerHTML = db.licoes.map(l => {
+      const proj = db.projetos.find(p => p.id === l.projetoId);
+      return `
+      <div class="item-card">
+        <h4>Lição - ${proj ? esc(proj.nome) : 'Projeto Excluído'}</h4>
+        <div style="white-space: pre-wrap; word-break: break-word; font-size:13px; color:var(--muted); margin-bottom:8px; line-height:1.5;">
+            <b style="color:var(--ink);">Situação:</b> ${esc(l.sit)}
+        </div>
+        <div style="white-space: pre-wrap; word-break: break-word; font-size:13px; color:var(--muted); margin-bottom:8px; line-height:1.5;">
+            <b style="color:var(--ink);">Ação Executada:</b> ${esc(l.acao)}
+        </div>
+        <div style="white-space: pre-wrap; word-break: break-word; font-size:13px; color:var(--muted); margin-bottom:8px; line-height:1.5;">
+            <b style="color:var(--ink);">Resultado Obtido:</b> ${esc(l.res)}
+        </div>
+        <div style="white-space: pre-wrap; word-break: break-word; font-size:13px; color:var(--brand); margin-bottom:8px; background:var(--soft); padding:10px; border-radius:6px; line-height:1.5; border-left:3px solid var(--brand);">
+            <b style="color:var(--ink);">Lição Aprendida:</b><br>${esc(l.lic)}
+        </div>
+        <button class="btn-sm btn-danger" onclick="db.licoes=db.licoes.filter(x=>x.id!==${l.id});salvarTudo();renderLicoes();">Excluir</button>
+      </div>
+    `}).join('') || '<p class="empty">Nenhuma lição.</p>'; 
+  }
 
+  function abrirLicao() { 
+    if(!db.projetos.length) return toast('Cadastre um projeto antes de criar uma lição.', 'aviso');
+    $('l_proj').innerHTML = db.projetos.map(p=>`<option value="${p.id}">${esc(p.nome)}</option>`).join(''); 
+    $('dlgLicao').showModal(); 
+  }
+
+  function salvarLicao(e) { 
+    e.preventDefault(); 
+    db.licoes.push({
+      id:Date.now(), 
+      projetoId:Number($('l_proj').value), 
+      sit:$('l_sit').value, 
+      acao:$('l_acao').value, 
+      res:$('l_res').value, 
+      lic:$('l_lic').value
+    }); 
+    salvarTudo(); 
+    fecharModal('dlgLicao'); 
+    renderLicoes(); 
+  }
+
+  // ==========================================
+  // EQUIPE E COMUNICAÇÃO
+  // ==========================================
   function renderColabs() { $('lista-colabs').innerHTML = db.colaboradores.map(c=>`<span class="chip">${esc(c.nome)}<button onclick="removerColab(${c.id})">✕</button></span>`).join('')||'<p class="empty">Nenhum colaborador.</p>'; }
   function adicionarColab(e) { e.preventDefault(); db.colaboradores.push({id:Date.now(), nome:$('c_nome').value}); $('c_nome').value=''; salvarTudo(); renderColabs(); popularSelects(); }
   async function removerColab(id) { if(await confirmar('Remover?')){ db.colaboradores = db.colaboradores.filter(c=>c.id!==id); salvarTudo(); renderColabs(); popularSelects(); renderDashboard(); } }
@@ -845,9 +918,6 @@
 
   function fecharModal(id) { $(id).close(); }
 
-  // ==========================================
-  // 2. LÓGICA DO SISTEMA DE COMUNICAÇÃO (NOVO)
-  // ==========================================
   function renderComunicacao() {
     $('tb-comunicacao').innerHTML = db.comunicacao.map(c => `
       <tr>
@@ -889,7 +959,7 @@
   }
 
   // ==========================================
-  // 3. LÓGICA DO SISTEMA DE ESCALA (INTEGRADO)
+  // SISTEMA DE ESCALA (INTEGRADO)
   // ==========================================
   const KEY_ESCALA = 'escalaSistema_integrado';
   const horaInicioTimeline = 8;
@@ -932,14 +1002,12 @@
       timelineBody.innerHTML = '';
       tabelaCorpo.innerHTML = '';
 
-      // Cabeçalho de Horas
       let hoursHtml = '';
       for (let i = horaInicioTimeline; i <= horaFimTimeline; i++) {
           hoursHtml += `<div class="timeline-hour">${i.toString().padStart(2, '0')}h</div>`;
       }
       $('timeline-hours').innerHTML = hoursHtml;
 
-      // Filtragem
       const dadosFiltrados = dadosEscala.filter(
           item => deptoSelecionado === "Todos" || item.departamento === deptoSelecionado
       );
@@ -949,9 +1017,7 @@
           return;
       }
 
-      // Gerar Linhas
       dadosFiltrados.forEach(colaborador => {
-          // Timeline
           const row = document.createElement('div');
           row.className = 'timeline-row';
           
@@ -975,11 +1041,10 @@
           row.appendChild(track);
           timelineBody.appendChild(row);
 
-          // Tabela
           const tr = document.createElement('tr');
           tr.innerHTML = `
               <td><span class="tag info">${colaborador.departamento}</span></td>
-              <td><strong>${esc(colaborador.nome)}</strong> <br><small style="color:var(--muted); max-width: 200px; display: inline-block;">${esc(colaborador.obs || '')}</small></td>
+              <td><strong>${esc(colaborador.nome)}</strong> <br><small style="color:var(--muted); max-width: 200px; display: inline-block; white-space: pre-wrap;">${esc(colaborador.obs || '')}</small></td>
               <td>${colaborador.inicio} – ${colaborador.fim}</td>
               <td>${colaborador.offInicio} – ${colaborador.offFim}</td>
               <td style="font-weight:bold; color:var(--brand);">${colaborador.almocoInicio}</td>
@@ -1079,7 +1144,7 @@
 
 
   // ==========================================
-  // 4. INICIALIZAÇÃO GERAL
+  // INICIALIZAÇÃO GERAL
   // ==========================================
   function init() {
     try { const t = localStorage.getItem('sistema_gestao_tema'); if(t) document.documentElement.dataset.theme = t; } catch(e){}
